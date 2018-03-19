@@ -7,10 +7,6 @@ iumio Framework Assets
 
 @ Let's create more simply
 
-<p align="center"><a href="https://framework.iumio.com" target="_blank">
-    <img src="https://travis-ci.org/iumio-team/iumio-framework.svg?branch=master">
-</a></p>
-
 
 Description
 ------------
