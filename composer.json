@@ -1,0 +1,32 @@
+{
+  "name": "iumio/framework-assets",
+  "license": "MIT",
+  "type": "project",
+  "description": "Assets of iumio Framework. Let's create more simply",
+  "keywords": ["framework-assets", "iumio-framework", "components", "jquery", "css", "javascript"],
+  "homepage": "https://framework.iumio.com",
+  "authors": [
+    {
+      "name": "Dany Rafina",
+      "email": "dany.rafina@iumio.com",
+      "homepage": "https://www.linkedin.com/in/dany-rafina/",
+      "role": "iumio Framework Architect / iumio Founder "
+    },
+    {
+      "name": "Kevin Huron",
+      "email": "kevin.huron@iumio.com",
+      "homepage": "http://kevinhuron.fr",
+      "role": "iumio Framework Co-Architect / iumio Co-Founder"
+    }
+  ],
+  "require": {
+    "iumio/iumio-framework": "0.*",
+    "components/font-awesome" : "~4.7.0",
+    "components/jquery" : "~3.2.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.*",
+    "iumio/php-hyper-builtin-server": "2.*",
+    "iumio/fi": "0.*"
+  }
+}
