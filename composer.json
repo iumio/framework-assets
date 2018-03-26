@@ -22,7 +22,7 @@
   "require": {
     "components/font-awesome" : "~4.7.0",
     "components/jquery" : "~3.2.1",
-    "daneden/animate.css": "3.5.*",
+    "daneden/animate.css": "3.5.*"
 
   }
 }
