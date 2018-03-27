@@ -31,6 +31,8 @@ $(document).ready(function () {
      */
     var priorTask = 0;
 
+    var used = 1;
+
     /**
      * Check if string does not contain any specials characters
      * @param str String to analyse
@@ -68,6 +70,9 @@ $(document).ready(function () {
      * Modal operation is a success
      */
     var operationSuccess = function () {
+        if (used === 1) {
+            return false;
+        }
         var selecttorModal = $("#modalManager");
         selecttorModal.find(".modal-body").html("<h4 class='text-center'>Operation is a success</h4>");
         selecttorModal.find(".btn-close").html("Close");
@@ -78,6 +83,9 @@ $(document).ready(function () {
      * Modal operation is a success with reload page
      */
     var operationSuccessReload = function (time) {
+        if (used === 1) {
+            return false;
+        }
         var selecttorModal = $("#modalManager");
         selecttorModal.data('bs.modal').options.keyboard = false;
         selecttorModal.data('bs.modal').options.backdrop = 'static';
@@ -94,6 +102,9 @@ $(document).ready(function () {
      * Modal operation is an error
      */
     var operationError = function (data) {
+        if (used === 1) {
+            return false;
+        }
         var selecttorModal = $("#modalManager");
         selecttorModal.find(".modal-body").html("<h4 class='text-center'>An error was detected</h4>");
         if (typeof data["responseJSON"] !== "undefined" || typeof data["msg"] !== "undefined")
@@ -2934,6 +2945,12 @@ $(document).ready(function () {
         modal("show");
     });
 
+    /**
+     * Notify when modal closed
+     */
+    $(document).on('click', ".btn-close", function () {
+       used = 0;
+    });
 
     /**
      * Event to build classampp for all environements
