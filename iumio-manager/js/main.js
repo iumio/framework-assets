@@ -119,7 +119,7 @@ $(document).ready(function () {
     /**
      * get debug log (limited to 10 values)
      */
-    var getLogs = function () {
+    var getLogs = function (reload) {
         var selector = $('.lastlog, .errorlastlog');
         if (typeof selector.attr("attr-href") === "undefined")
             return (1);
@@ -144,7 +144,8 @@ $(document).ready(function () {
                 }
             },
             error : function (data) {
-                operationError(data);
+                if (typeof reload !== 'undefined')
+                    operationError(data);
             }
         });
     };
@@ -153,7 +154,7 @@ $(document).ready(function () {
     /**
      * get routing file list
      */
-    var getRoutingList = function () {
+    var getRoutingList = function (reload) {
         var selector = $('.routinglist');
         if (typeof selector.attr("attr-href") === "undefined")
             return (1);
@@ -184,7 +185,8 @@ $(document).ready(function () {
                 }
             },
             error : function (data) {
-                operationError(data);
+                if (typeof reload !== 'undefined')
+                    operationError(data);
             }
         });
     };
@@ -192,7 +194,7 @@ $(document).ready(function () {
     /**
      * get services file list
      */
-    var getServicesList = function () {
+    var getServicesList = function (reload) {
         var selector = $('.serviceslist');
         if (typeof selector.attr("attr-href") === "undefined")
             return (1);
@@ -223,7 +225,8 @@ $(document).ready(function () {
                 }
             },
             error : function (data) {
-                operationError(data);
+                if (typeof reload !== 'undefined')
+                    operationError(data);
             }
         });
     };
@@ -252,7 +255,7 @@ $(document).ready(function () {
     var pos = 0;
     var call = 0;
     var ajaxlogs = false;
-    var getUnlimitedLogs = function () {
+    var getUnlimitedLogs = function (reload) {
         var selector = $('.logslist');
         if (typeof selector.attr("attr-href") === "undefined")
             return (1);
@@ -293,7 +296,8 @@ $(document).ready(function () {
             },
             error : function (data) {
                 $(".loader-iumio-m").hide();
-                operationError(data);
+                if (typeof reload !== 'undefined')
+                    operationError(data);
             }
         })
     };
@@ -304,7 +308,7 @@ $(document).ready(function () {
     var pos2 = 0;
     var call2 = 0;
     var ajaxlogs2 = false;
-    var getUnlimitedLogs2 = function () {
+    var getUnlimitedLogs2 = function (reload) {
         var selector = $('.logslist2');
 
         if (typeof selector.attr("attr-href") === "undefined")
@@ -346,7 +350,8 @@ $(document).ready(function () {
             },
             error : function (data) {
                 $(".loader-iumio-m2").hide();
-                operationError(data);
+                if (typeof reload !== 'undefined')
+                    operationError(data);
             }
         })
     };
@@ -355,7 +360,7 @@ $(document).ready(function () {
     /**
      * get databases list
      */
-    var getDatabasesList = function () {
+    var getDatabasesList = function (reload) {
         var selector = $('.databaseslist');
         if (typeof selector.attr("attr-href") === "undefined")
             return (1);
@@ -384,7 +389,8 @@ $(document).ready(function () {
                 }
             },
             error : function (data) {
-                operationError(data);
+                if (typeof reload !== 'undefined')
+                    operationError(data);
             }
         });
     };
@@ -393,7 +399,7 @@ $(document).ready(function () {
     /**
      * get hosts list
      */
-    var getHostsList = function () {
+    var getHostsList = function (reload) {
         var selector = $('.hostslist');
         if (typeof selector.attr("attr-href") === "undefined")
             return (1);
@@ -420,7 +426,8 @@ $(document).ready(function () {
                 }
             },
             error : function (data) {
-                operationError(data);
+                if (typeof reload !== 'undefined')
+                    operationError(data);
             }
         });
     };
@@ -428,7 +435,7 @@ $(document).ready(function () {
     /**
      * get smarty configuration list
      */
-    var getAllSmartyConfigs = function () {
+    var getAllSmartyConfigs = function (reload) {
 
         var selector = $('.smartyconfigs');
         if (typeof selector.attr("attr-href") === "undefined")
@@ -457,7 +464,8 @@ $(document).ready(function () {
                 }
             },
             error : function (data) {
-                operationError(data);
+                if (typeof reload !== 'undefined')
+                    operationError(data);
             }
         });
     };
@@ -467,7 +475,7 @@ $(document).ready(function () {
      * get app list
      */
     var simpleapps = null;
-    var getAppListSimple = function () {
+    var getAppListSimple = function (reload) {
 
         var selector = $('.applist');
         if (typeof selector.attr("attr-href") === "undefined")
@@ -501,7 +509,8 @@ $(document).ready(function () {
                 }
             },
             error : function (data) {
-                operationError(data);
+                if (typeof reload !== 'undefined')
+                    operationError(data);
             }
         })
     };
@@ -509,7 +518,7 @@ $(document).ready(function () {
     /**
      * get all cache environment
      */
-    var getAllCacheEnv = function () {
+    var getAllCacheEnv = function (reload) {
         var selector = $('.getAllEnvCache');
         if (typeof selector.attr("attr-href") === "undefined")
             return (1);
@@ -539,7 +548,8 @@ $(document).ready(function () {
                 }
             },
             error : function (data) {
-                operationError(data);
+                if (typeof reload !== 'undefined')
+                    operationError(data);
             }
         })
     };
@@ -547,7 +557,7 @@ $(document).ready(function () {
     /**
      * get all assets
      */
-    var getAllAssets = function () {
+    var getAllAssets = function (reload) {
 
         var selector = $('.getAllAssets');
         if (typeof selector.attr("attr-href") === "undefined")
@@ -581,8 +591,8 @@ $(document).ready(function () {
                                 "<td>" + ((value['haveassets'] === 1) ? "Yes" : ((value['haveassets'] === 2) ? "Empty" : "No")) + "</td>" +
                                 "<td>" + value['dev_perms'] + "</td>" +
                                 "<td>" + value['prod_perms'] + "</td>" +
-                                "<td class='" + ((value['haveassets'] === 1) ? (((value['status_dev'] === 1) ? 'iumio-green-color' : 'iumio-red-color') + "'>" + ((value['status_dev'] === 1) ? 'Published <i class="pe-7s-angle-down-circle iumio-green-red-btn" style="color: green;"></i>' : 'Need to be published <i class="pe-7s-close-circle iumio-green-red-btn" style="color: red;"></i')) : "Unavailable") + "</td>" +
-                                "<td class='" + ((value['haveassets'] === 1) ? ((value['status_prod'] === 1) ? 'iumio-green-color' : 'iumio-red-color') + "'>" + ((value['status_prod'] === 1) ? 'Published <i class="pe-7s-angle-down-circle iumio-green-red-btn" style="color: green;"></i>' : 'Need to be published <i class="pe-7s-close-circle iumio-green-red-btn" style="color: red;"></i') : "") + "</td>" +
+                                "<td class='" + ((value['haveassets'] === 1) ? (((value['status_dev'] === 1) ? 'iumio-green-color' : 'iumio-red-color') + "'>" + ((value['status_dev'] === 1) ? 'Published <i class="pe-7s-angle-down-circle iumio-green-red-btn" style="color: green;"></i>' : 'Need to be published <i class="pe-7s-close-circle iumio-green-red-btn" style="color: red;"></i>')) : "Unavailable") + "</td>" +
+                                "<td class='" + ((value['haveassets'] === 1) ? ((value['status_prod'] === 1) ? 'iumio-green-color' : 'iumio-red-color') + "'>" + ((value['status_prod'] === 1) ? 'Published <i class="pe-7s-angle-down-circle iumio-green-red-btn" style="color: green;"></i>' : 'Need to be published <i class="pe-7s-close-circle iumio-green-red-btn" style="color: red;"></i>') : "") + "</td>" +
                                 ((value['haveassets'] === 1) ? "<td><button class='btn-info btn showoptionsassets' attr-href-clear-dev='" + value['clear']['dev'] + "' attr-href-clear-prod='" + value['clear']['prod'] + "' attr-href-publish-dev='" + value['publish']['dev'] + "'  attr-href-publish-prod='" + value['publish']['prod'] + "'  attr-href-clear-all='" + value['clear']['all'] + "' attr-href-publish-all='" + value['publish']['all'] + "' attr-appname='" + value['name'] + "' >AC</button></td>" : "<td>Unavailable</td>") +
                                 "</tr>");
                         }
@@ -591,7 +601,8 @@ $(document).ready(function () {
                 }
             },
             error : function (data) {
-                operationError(data);
+                if (typeof reload !== 'undefined')
+                    operationError(data);
             }
         })
     };
@@ -600,7 +611,7 @@ $(document).ready(function () {
     /**
      * get all compile environment
      */
-    var getAllCompileEnv = function () {
+    var getAllCompileEnv = function (reload) {
 
         var selector = $('.getAllEnvCompile');
         if (typeof selector.attr("attr-href") === "undefined")
@@ -631,7 +642,8 @@ $(document).ready(function () {
                 }
             },
             error : function (data) {
-                operationError(data);
+                if (typeof reload !== 'undefined')
+                    operationError(data);
             }
         })
     };
@@ -1154,7 +1166,7 @@ $(document).ready(function () {
     /**
      * Clear the requirements for deployment
      */
-    var getRequirementsDeployment = function () {
+    var getRequirementsDeployment = function (reload) {
 
         if (onCallDeploy === 1)
             return (false);
@@ -1224,7 +1236,8 @@ $(document).ready(function () {
             },
             error : function (data) {
                 onCallDeploy = 0;
-                operationError(data);
+                if (typeof reload !== 'undefined')
+                    operationError(data);
             }
         })
     };
@@ -1302,7 +1315,7 @@ $(document).ready(function () {
      * Dashboard Statistics
      * @param url Url to have dashboard stats
      */
-    var dashboardStatistics = function () {
+    var dashboardStatistics = function (reload) {
         var selector = $('.dashboardStats');
         if (typeof selector.attr('attr-href') == 'undefined')
             return (1);
@@ -1339,7 +1352,8 @@ $(document).ready(function () {
                 }
             },
             error : function (data) {
-                operationError(data);
+                if (typeof reload !== 'undefined')
+                    operationError(data);
             }
         })
     };
@@ -2999,21 +3013,20 @@ $(document).ready(function () {
 
     });
 
-    getLogs();
-    getAppListSimple();
-    getUnlimitedLogs();
-    getUnlimitedLogs2();
-    getDatabasesList();
-    getHostsList();
-    getAllCacheEnv();
-    getAllCompileEnv();
-    getAllSmartyConfigs();
-    getAllAssets();
-    getRoutingList();
-    getServicesList();
-    dashboardStatistics();
-    autoloaderStatistics();
-    getRequirementsDeployment();
+    getLogs(true);
+    getAppListSimple(true);
+    getUnlimitedLogs(true);
+    getUnlimitedLogs2(true);
+    getDatabasesList(true);
+    getHostsList(true);
+    getAllCacheEnv(true);
+    getAllCompileEnv(true);
+    getAllSmartyConfigs(true);
+    getAllAssets(true);
+    getRoutingList(true);
+    getServicesList(true);
+    dashboardStatistics(true);
+    getRequirementsDeployment(true);
 
 
     setInterval(function () {
@@ -3022,26 +3035,25 @@ $(document).ready(function () {
         }
         if (noapp === false)
         {
-            getLogs();
-            getAppListSimple();
-            getDatabasesList();
-            getHostsList();
-            getAllCacheEnv();
-            getAllCompileEnv();
+            getLogs(true);
+            getAppListSimple(true);
+            getDatabasesList(true);
+            getHostsList(true);
+            getAllCacheEnv(true);
+            getAllCompileEnv(true);
             getAllSmartyConfigs();
-            getAllAssets();
-            getRoutingList();
-            getServicesList();
-            dashboardStatistics();
-            autoloaderStatistics();
+            getAllAssets(true);
+            getRoutingList(true);
+            getServicesList(true);
+            dashboardStatistics(true);
         }
     }, 7000);
 
     setInterval(function () {
         if (noapp === false)
         {
-            getUnlimitedLogs();
-            getUnlimitedLogs2();
+            getUnlimitedLogs(true);
+            getUnlimitedLogs2(true);
         }
     }, 10000);
 
