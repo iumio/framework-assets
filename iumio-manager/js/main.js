@@ -31,7 +31,7 @@ $(document).ready(function () {
      */
     var priorTask = 0;
 
-    var used = 1;
+    var used = 0;
 
     /**
      * Check if string does not contain any specials characters
@@ -70,9 +70,11 @@ $(document).ready(function () {
      * Modal operation is a success
      */
     var operationSuccess = function () {
+        console.log(used);
         if (used === 1) {
             return false;
         }
+        used = 1;
         var selecttorModal = $("#modalManager");
         selecttorModal.find(".modal-body").html("<h4 class='text-center'>Operation is a success</h4>");
         selecttorModal.find(".btn-close").html("Close");
@@ -236,7 +238,7 @@ $(document).ready(function () {
      */
     $('.iumio-unlimited-log-display').bind('scroll', function(){
         if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight)
-            getUnlimitedLogs();
+            getUnlimitedLogs(true);
     });
 
     /**
@@ -244,7 +246,7 @@ $(document).ready(function () {
      */
     $('.iumio-unlimited-log-display2').bind('scroll', function(){
         if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight)
-            getUnlimitedLogs2();
+            getUnlimitedLogs2(true);
     });
 
 
@@ -707,7 +709,7 @@ $(document).ready(function () {
                 priorTask = 0;
                 if (data['code'] === 200)
                 {
-                    getAppListSimple();
+                    getAppListSimple(true);
                     if (data['code'] === 200)
                         operationSuccess();
                     else {
@@ -758,7 +760,7 @@ $(document).ready(function () {
             success : function(data){
                 if (data['code'] === 200)
                 {
-                    getDatabasesList();
+                    getDatabasesList(true);
                     if (data['code'] === 200)
                         operationSuccess();
                     else {
@@ -807,7 +809,7 @@ $(document).ready(function () {
             success : function(data){
                 if (data['code'] === 200)
                 {
-                    getServicesList();
+                    getServicesList(true);
                     if (data['code'] === 200)
                         operationSuccess();
                     else {
@@ -819,7 +821,7 @@ $(document).ready(function () {
                 }
             },
             error : function (data) {
-                    operationError(data);
+                operationError(data);
             }
         })
     };
@@ -880,7 +882,7 @@ $(document).ready(function () {
             success : function(data){
                 if (data['code'] === 200)
                 {
-                    getDatabasesList();
+                    getDatabasesList(true);
                     if (data['code'] === 200)
                     {
                         operationSuccess();
@@ -929,10 +931,10 @@ $(document).ready(function () {
             success : function(data){
                 if (data['code'] === 200)
                 {
-                    getDatabasesList();
+                    getDatabasesList(true);
                     if (data['code'] === 200)
                     {
-                        getAppListSimple();
+                        getAppListSimple(true);
                         operationSuccess();
                     }
                     else
@@ -967,7 +969,7 @@ $(document).ready(function () {
             success : function(data){
                 if (data['code'] === 200)
                 {
-                    getHostsList();
+                    getHostsList(true);
                     operationSuccess();
                 }
                 else
@@ -1013,7 +1015,7 @@ $(document).ready(function () {
             success : function(data){
                 if (data['code'] === 200)
                 {
-                    getDatabasesList();
+                    getDatabasesList(true);
                     if (data['code'] === 200)
                         operationSuccess();
                     else
@@ -1063,7 +1065,7 @@ $(document).ready(function () {
             success : function(data){
                 if (data['code'] === 200)
                 {
-                    getServicesList();
+                    getServicesList(true);
                     if (data['code'] === 200)
                         operationSuccess();
                     else
@@ -1093,7 +1095,7 @@ $(document).ready(function () {
             success : function(data){
                 if (data['code'] === 200)
                 {
-                    getAppListSimple();
+                    getAppListSimple(true);
                     operationSuccess();
                 }
             },
@@ -1118,7 +1120,6 @@ $(document).ready(function () {
             success : function(data){
                 if (data['code'] === 200)
                 {
-                    //getRoutingList();
                     operationSuccess();
                 }
             },
@@ -1141,7 +1142,6 @@ $(document).ready(function () {
             success : function(data){
                 if (data['code'] === 200)
                 {
-                    //getRoutingList();
                     operationSuccess();
                 }
             },
@@ -1189,7 +1189,6 @@ $(document).ready(function () {
                     var rs = data['results'];
 
                     selector.html("");
-                    //getRoutingList();
                     $.each(rs, function (index, value) {
                         selector.append("<tr>\n" +
                             "    <td class='break-word'>\n" +
@@ -1203,8 +1202,8 @@ $(document).ready(function () {
                             "        <i class=\"fa "+((value["status"] == false)? "fa-times text-danger" : "fa-check text-success")+"\"></i>\n" +
                             "        </td>\n" +
                             "        </tr>");
-                       if (value["status"] == false)
-                           lock++;
+                        if (value["status"] == false)
+                            lock++;
                     });
 
                     var sdep = $(".deployprod");
@@ -1301,7 +1300,7 @@ $(document).ready(function () {
             success : function(data){
                 if (data['code'] === 200)
                 {
-                    getRoutingList();
+                    getRoutingList(true);
                     operationSuccess();
                 }
             },
@@ -1403,7 +1402,7 @@ $(document).ready(function () {
             success : function(data){
                 if (data['code'] === 200)
                 {
-                    getAppListSimple();
+                    getAppListSimple(true);
                     operationSuccess();
                 }
             },
@@ -1435,7 +1434,7 @@ $(document).ready(function () {
                 var ndata = JSON.parse(data);
                 if (ndata['code'] === 200)
                 {
-                    getAppListSimple();
+                    getAppListSimple(true);
                     operationSuccess();
                     $("#modalManager").find(".modal-body").append("<h5 class='text-center' style='color: limegreen'><em>"+ndata["ext"]+"</em></h5>");
                 }
@@ -1464,7 +1463,7 @@ $(document).ready(function () {
             success : function(data){
                 if (data['code'] === 200)
                 {
-                    getRoutingList();
+                    getRoutingList(true);
                     operationSuccess();
                 }
             },
@@ -1489,8 +1488,8 @@ $(document).ready(function () {
                 if (data['code'] === 200)
                 {
                     operationSuccess();
-                    getUnlimitedLogs();
-                    getUnlimitedLogs2();
+                    getUnlimitedLogs(true);
+                    getUnlimitedLogs2(true);
                 }
             },
             error : function (data) {
@@ -1535,7 +1534,7 @@ $(document).ready(function () {
                     }
                     else
                     {
-                        getAppListSimple();
+                        getAppListSimple(true);
                         operationSuccess();
                     }
                 }
@@ -1562,7 +1561,7 @@ $(document).ready(function () {
             type : 'POST',
             dataType : 'json',
             success : function(data){
-                getAllCacheEnv();
+                getAllCacheEnv(true);
                 if (data['code'] === 200)
                     operationSuccess();
                 else
@@ -1609,7 +1608,7 @@ $(document).ready(function () {
             type : 'POST',
             dataType : 'json',
             success : function(data){
-                getAllCacheEnv();
+                getAllCacheEnv(true);
                 if (data['code'] === 200)
                     operationSuccess();
                 else
@@ -1657,7 +1656,7 @@ $(document).ready(function () {
             type : 'POST',
             dataType : 'json',
             success : function(data){
-                getDatabasesList();
+                getDatabasesList(true);
                 if (data['code'] === 200)
                     operationSuccess();
                 else
@@ -1680,7 +1679,7 @@ $(document).ready(function () {
             type : 'POST',
             dataType : 'json',
             success : function(data){
-                getServicesList();
+                getServicesList(true);
                 if (data['code'] === 200)
                     operationSuccess();
                 else
@@ -1703,7 +1702,6 @@ $(document).ready(function () {
             type : 'POST',
             dataType : 'json',
             success : function(data){
-                // getDatabasesList();
                 if (data['code'] === 200)
                     operationSuccess();
                 else
@@ -1727,7 +1725,6 @@ $(document).ready(function () {
             type : 'POST',
             dataType : 'json',
             success : function(data){
-                // getDatabasesList();
                 if (data['code'] === 200)
                     operationSuccess();
                 else
@@ -2207,20 +2204,20 @@ $(document).ready(function () {
                     selecttorModal.find(".modal-body").append("<div class='form-group text-center'><label>Port</label><input type='number' name='port' class='form-control text-center' value='"+result['db_port']+"'></div>");
                     selecttorModal.find(".modal-body").append("</div></div>");
                     selecttorModal.find(".modal-body").append("<div class='form-group text-center'><label>Driver</label> <select name='driver' class='form-control'>"+
-                    "<option value='mysql' "+((result['db_driver'] == "mysql")? "selected" : "")+">MySQL</option> " +
-                    "<option value='pgsql' "+((result['db_driver'] == "pgsql")? "selected" : "")+">PostgreSQL</option> " +
-                    "<option value='sqlsrv' "+((result['db_driver'] == "sqlsrv")? "selected" : "")+">Microsoft SQL Server</option> " +
-                    "<option value='cubrid' "+((result['db_driver'] == "cubrid")? "selected" : "")+">CUBRID</option> " +
-                    "<option value='firebird' "+((result['db_driver'] == "firebird")? "selected" : "")+">Firebird</option> " +
-                    "<option value='ibm' "+((result['db_driver'] == "ibm")? "selected" : "")+">IBM</option> " +
-                    "<option value='informix' "+((result['db_driver'] == "informix")? "selected" : "")+">Informix</option> " +
-                    "<option value='sybase' "+((result['db_driver'] == "sybase")? "selected" : "")+">Sybase</option> " +
-                    "<option value='mssql' "+((result['db_driver'] == "mssql")? "selected" : "")+">FreeTDS</option> " +
-                    "<option value='dblib' "+((result['db_driver'] == "dblib")? "selected" : "")+">Microsoft SQL Server (dblib)</option> " +
-                    "<option value='oci' "+((result['db_driver'] == "oci")? "selected" : "")+">Oracle</option> " +
-                    "<option value='odbc' "+((result['db_driver'] == "odbc")? "selected" : "")+">IBM DB2 Call Level</option> " +
-                    "<option value='4D' "+((result['db_driver'] == "4D")? "selected" : "")+">4D</option> " +
-                    "</select></div>");
+                        "<option value='mysql' "+((result['db_driver'] == "mysql")? "selected" : "")+">MySQL</option> " +
+                        "<option value='pgsql' "+((result['db_driver'] == "pgsql")? "selected" : "")+">PostgreSQL</option> " +
+                        "<option value='sqlsrv' "+((result['db_driver'] == "sqlsrv")? "selected" : "")+">Microsoft SQL Server</option> " +
+                        "<option value='cubrid' "+((result['db_driver'] == "cubrid")? "selected" : "")+">CUBRID</option> " +
+                        "<option value='firebird' "+((result['db_driver'] == "firebird")? "selected" : "")+">Firebird</option> " +
+                        "<option value='ibm' "+((result['db_driver'] == "ibm")? "selected" : "")+">IBM</option> " +
+                        "<option value='informix' "+((result['db_driver'] == "informix")? "selected" : "")+">Informix</option> " +
+                        "<option value='sybase' "+((result['db_driver'] == "sybase")? "selected" : "")+">Sybase</option> " +
+                        "<option value='mssql' "+((result['db_driver'] == "mssql")? "selected" : "")+">FreeTDS</option> " +
+                        "<option value='dblib' "+((result['db_driver'] == "dblib")? "selected" : "")+">Microsoft SQL Server (dblib)</option> " +
+                        "<option value='oci' "+((result['db_driver'] == "oci")? "selected" : "")+">Oracle</option> " +
+                        "<option value='odbc' "+((result['db_driver'] == "odbc")? "selected" : "")+">IBM DB2 Call Level</option> " +
+                        "<option value='4D' "+((result['db_driver'] == "4D")? "selected" : "")+">4D</option> " +
+                        "</select></div>");
                     selecttorModal.find(".modal-body").append("</div></div>");
 
                     selecttorModal.find(".btn-close").html("Close");
@@ -2366,7 +2363,7 @@ $(document).ready(function () {
 
         selecttorModal.find(".modal-body").append("<div class='form-group text-center'><label>Package</label><input type='file' id='apppackage' name='apppackage' class='form-control text-center'></div>");
         selecttorModal.find(".modal-body").append("</div></div>");
-       selecttorModal.find(".modal-body").append("</div></div>");
+        selecttorModal.find(".modal-body").append("</div></div>");
 
         selecttorModal.find(".btn-close").html("Close");
 
@@ -2490,7 +2487,7 @@ $(document).ready(function () {
      * Reload data for deployment
      */
     $(document).on("click", ".iumioDeployReload", function () {
-        getRequirementsDeployment();
+        getRequirementsDeployment(true);
     });
 
     /**
@@ -2522,13 +2519,13 @@ $(document).ready(function () {
                         var link_gen = "";
                         if (typeof  value['params'] !== "undefined") {
                             var pa = value['params'];
-                             pu = value['r_parameters'];
+                            pu = value['r_parameters'];
                             for (var i = 0; i < pa.length; i++)
                             {
                                 if (typeof  pu[i] !== "undefined")
                                     params += "<li class='list-group-item text-center'> "+ pa[i] +" <i class='pe-7s-right-arrow iumio-picto-routing'></i> <strong>"+ pu[i][1]+"</strong></li>";
                                 else
-                                   params += "<li class='list-group-item text-center'> "+ pa[i] + " <i class='pe-7s-right-arrow iumio-picto-routing'></i> <strong>untyped</strong></li>";
+                                    params += "<li class='list-group-item text-center'> "+ pa[i] + " <i class='pe-7s-right-arrow iumio-picto-routing'></i> <strong>untyped</strong></li>";
                             }
 
                         }
@@ -2962,8 +2959,8 @@ $(document).ready(function () {
     /**
      * Notify when modal closed
      */
-    $(document).on('click', ".btn-close", function () {
-       used = 0;
+    $(document).on('click', ".btn-close, #modalManager", function () {
+        used = 0;
     });
 
     /**
@@ -3000,7 +2997,7 @@ $(document).ready(function () {
             type : 'POST',
             dataType : 'json',
             success : function(data){
-                getAllAssets();
+                getAllAssets(true);
                 if (data['code'] === 200)
                     operationSuccess();
                 else
@@ -3041,7 +3038,7 @@ $(document).ready(function () {
             getHostsList(true);
             getAllCacheEnv(true);
             getAllCompileEnv(true);
-            getAllSmartyConfigs();
+            getAllSmartyConfigs(true);
             getAllAssets(true);
             getRoutingList(true);
             getServicesList(true);
