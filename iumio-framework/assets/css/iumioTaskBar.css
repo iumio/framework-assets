@@ -29,6 +29,9 @@
     margin-bottom: 0px;
 }
 
+.iumio-taskbar-item {
+    padding-right: 5px!important;
+}
 
 .iumioTaskbarTable {
     margin: 0px auto;
@@ -194,7 +197,7 @@
 
 .iumioTaskBarDropdownContent .iumioTaskBarGetOneLog:hover
 {
-   background-color: rgba(0,0,255, 0.5)!important;
+    background-color: rgba(0,0,255, 0.5)!important;
 }
 
 /*.iumioTaskBarOneLog a:hover
@@ -276,6 +279,7 @@
     font-size: 13px;
     text-decoration: none;
     font-weight: 700;
+
 }
 
 .iumioTaskBar li a:hover:not(.active) {
@@ -501,6 +505,14 @@
     font-size: 14px;
 }
 
+.icon-iumio-task:before
+{
+    content: '→';
+    padding-right: 6px;
+    position: relative;
+    top: -4px;
+}
+
 @media (max-width: 1034px)
 {
     .iumioTaskBar  li a{
@@ -565,4 +577,3 @@
 
 
 
-/*****/

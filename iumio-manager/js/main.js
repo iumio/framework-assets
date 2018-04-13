@@ -70,7 +70,6 @@ $(document).ready(function () {
      * Modal operation is a success
      */
     var operationSuccess = function () {
-        console.log(used);
         if (used === 1) {
             return false;
         }
@@ -501,7 +500,7 @@ $(document).ready(function () {
                             "<td>"+value['enabled']+"</td>" +
                             "<td>"+((value['prefix'] !== "")? "/"+value['prefix'] : "no prefix")+"</td>" +
                             "<td>"+value['class']+"</td>" +
-                            "<td><button class=' btn-info btn toeditapp' attr-href2='"+value['link_edit_save']+"' attr-appname='"+value['name']+"' attr-prefix='"+value['prefix']+"' attr-enabled='"+value['enabled']+"'>ED</button></td>"+
+                            "<td><button class=' btn-info btn toeditapp' attr-href2='"+value['link_edit_save']+"' attr-appname='"+value['name']+"' attr-prefix='"+value['prefix']+"' attr-enabled='"+value['enabled']+"' attr-href-config='"+value['link_config']+"'>ED</button></td>"+
                             "<td><button class='btn-info btn deleteapp' attr-href='"+value['link_remove']+"' attr-appname='"+value['name']+"'>DE</button></td>"+
                             "<td><button class='btn-info btn exportapp' attr-href='"+value['link_export']+"' attr-appname='"+value['name']+"'>EXP</button></td>"+
                             "</tr>");
@@ -513,6 +512,34 @@ $(document).ready(function () {
             error : function (data) {
                 if (typeof reload !== 'undefined')
                     operationError(data);
+            }
+        })
+    };
+
+    /**
+     * Get an app config
+     * @param appname The app name
+     * @param href Link to get the config
+     * @param callback the callback
+     * @returns {number}
+     */
+    var getConfigApp = function (appname, href, callback) {
+
+        $.ajax({
+            url : href,
+            type : 'POST',
+            dataType : 'json',
+            data : {'appname' : appname},
+            success : function(data){
+                if (data['code'] === 200) {
+                    callback(data["result"]);
+                }
+                else {
+                    console.error("Cannot get the app : "+appname+ " - Code : "+data['code']+" - "+JSON.stringify(data));
+                }
+            },
+            error : function (data) {
+                console.error("Cannot get the app : "+appname+ " - "+JSON.stringify(data))
             }
         })
     };
@@ -913,6 +940,15 @@ $(document).ready(function () {
         var prefix           = $("input[type=text][name=prefix]").val();
         var enabled           = $("input[type=checkbox][name=enabled]:checked").val();
 
+        // Advanced options
+        var vdev           = $("select[name=vdev] option:selected").val();
+        var vprod          = $("select[name=vprod] option:selected").val();
+
+        var hostsdeva      = $("input[type=text][name=hostsdeva]").val();
+        var hostsdevd      = $("input[type=text][name=hostsdevd]").val();
+        var hostsproda     = $("input[type=text][name=hostsproda]").val();
+        var hostsprodd     = $("input[type=text][name=hostsprodd]").val();
+
 
         var selecttorModal = $("#modalManager");
 
@@ -927,7 +963,9 @@ $(document).ready(function () {
             url : href,
             type : 'POST',
             dataType : 'json',
-            data : {"prefix" : prefix, "enabled" : enabled},
+            data : {"prefix" : prefix, "enabled" : enabled, "vdev" : vdev,
+                "vprod" : vprod, "hostsdeva" : hostsdeva, "hostsdevd" : hostsdevd,
+                "hostsproda" : hostsproda, "hostsprodd" : hostsprodd},
             success : function(data){
                 if (data['code'] === 200)
                 {
@@ -2393,31 +2431,58 @@ $(document).ready(function () {
         var prefix = selector.attr("attr-prefix");
         var enabled = selector.attr("attr-enabled");
         var name = selector.attr("attr-appname");
+        var href_conf = selector.attr("attr-href-config");
 
         var selecttorModal = $("#modalManager");
+        getConfigApp(name, href_conf, function (results) {
+            var hadev = "";
+            var hddev = "";
+            var haprod = "";
+            var hdprod = "";
+            if ("undefined" !== typeof results.hosts_allowed_dev && null !== results.hosts_allowed_dev) {
+                hadev = (results.hosts_allowed_dev).join(";");
+            }
+            if ("undefined" !== typeof results.hosts_denied_dev && null !== results.hosts_denied_dev) {
+                hddev = (results.hosts_denied_dev).join(";");
+            }
+            if ("undefined" !== typeof results.hosts_allowed_prod && null !== results.hosts_allowed_prod) {
+                haprod = (results.hosts_allowed_prod).join(";");
+            }
+            if ("undefined" !== typeof results.hosts_denied_prod && null !== results.hosts_denied_prod) {
+                hdprod = (results.hosts_denied_prod).join(";");
+            }
+            selecttorModal.find(".modal-header").html("<strong class='text-center'>Edit "+name+" app configuration</strong>");
+            selecttorModal.find(".modal-header").append("<p class='alert alert-danger onealert' style='display: none'></p>");
+            selecttorModal.find(".modal-body").html("<h4 class='text-center'>Edit fields to update app configuration.</h4>");
+            selecttorModal.find(".modal-body").append("<br>");
+            selecttorModal.find(".modal-body").append("<div class='container'><div class='row'>");
 
-        selecttorModal.find(".modal-header").html("<strong class='text-center'>Edit "+name+" app configuration</strong>");
-        selecttorModal.find(".modal-header").append("<p class='alert alert-danger onealert' style='display: none'></p>");
-        selecttorModal.find(".modal-body").html("<h4 class='text-center'>Edit fields to update app configuration.</h4>");
-        selecttorModal.find(".modal-body").append("<br>");
-        selecttorModal.find(".modal-body").append("<div class='container'><div class='row'>");
+            selecttorModal.find(".modal-body").append("<div class='form-group text-center'><label>Prefix</label><input type='text' name='prefix' class='form-control text-center' value='"+prefix+"' ></div>");
+            selecttorModal.find(".modal-body").append("</div></div>");
+            selecttorModal.find(".modal-body").append('<div class="container-new">' +
+                '<div class="form-group text-center"> <label>Enabled</label> <div class="check"><input id="check" type="checkbox" name="enabled" '+((enabled === "yes")? "checked='checked'" : "")+' style="display: none"/><label for="check"><div class="box"><i class="fa fa-check"></i></div> </label></div></div>' +
+                '<div class="text-center "> <button data-toggle="collapse" data-target="#'+name+'-collapse" class=" btn btn-toolbar">Advanced options</button></div><br>' +
+                '<div id="'+name+'-collapse" class="collapse">' +
+                '<div class="row"> <div class="col-md-12 text-center text-lg-center text-info"><strong>Advanced options</div> <div class="form-group text-center col-md-6"> <label>Visible on dev</label><select name="vdev" class="form-control"><option value="null" '+(("undefined" === typeof  results.visibility_dev  || null === results.visibility_dev)? "selected" : "")+' >Not specified</option><option value="true" '+(("undefined" !== typeof  results.visibility_dev  && true === results.visibility_dev)? "selected" : "")+' >Yes</option><option value="false" '+(("undefined" !== typeof  results.visibility_dev  && false === results.visibility_dev)? "selected" : "")+' >No</option></select></div>' +
+                '<div class="form-group text-center col-md-6"> <label>Visible on prod</label> <select name="vprod" class="form-control"><option value="null" '+(("undefined" === typeof  results.visibility_prod  || null === results.visibility_prod)? "selected" : "")+' >Not specified</option><option value="true" '+(("undefined" !== typeof  results.visibility_prod  && true === results.visibility_prod)? "selected" : "")+' >Yes</option><option value="false" '+(("undefined" !== typeof  results.visibility_prod  && false === results.visibility_prod)? "selected" : "")+' >No</option></select></div>' +
+                "<div class='form-group text-center col-md-12'><label>Hosts allowed on dev <br><small class='text-info'>(Split each host with ; delimiter)</small></label><input type='text' name='hostsdeva' class='form-control text-center' value='"+hadev+"' ></div>"+
+                "<div class='form-group text-center col-md-12'><label>Hosts denied on dev <br><small class='text-info'>(Split each host with ; delimiter)</small></label><input type='text' name='hostsdevd' class='form-control text-center' value='"+hddev+"' ></div>"+
+                "<div class='form-group text-center col-md-12'><label>Hosts allowed on prod <br><small class='text-info'>(Split each host with ; delimiter)</small></label><input type='text' name='hostsproda' class='form-control text-center' value='"+haprod+"' ></div>"+
+                "<div class='form-group text-center col-md-12'><label>Hosts denied on prod <br><small class='text-info'>(Split each host with ; delimiter)</small></label><input type='text' name='hostsprodd' class='form-control text-center' value='"+hdprod+"' ></div>"+
+                '</div>'+
+                '</div>');
+            selecttorModal.find(".modal-body").append("</div></div>");
+            selecttorModal.find(".btn-close").html("Close");
+            selecttorModal.find(".btn-valid").html("Update");
 
-        selecttorModal.find(".modal-body").append("<div class='form-group text-center'><label>Prefix</label><input type='text' name='prefix' class='form-control text-center' value='"+prefix+"' ></div>");
-        selecttorModal.find(".modal-body").append("</div></div>");
-        selecttorModal.find(".modal-body").append('<div class="container-new">' +
-            '<div class="form-group text-center"> <label>Enabled</label> <div class="check"><input id="check" type="checkbox" name="enabled" '+((enabled === "yes")? "checked='checked'" : "")+' style="display: none"/><label for="check"><div class="box"><i class="fa fa-check"></i></div> </label></div></div>' +
-            '</div>');
-        selecttorModal.find(".modal-body").append("</div></div>");
-        selecttorModal.find(".btn-close").html("Close");
-        selecttorModal.find(".btn-valid").html("Update");
+            selecttorModal.find(".btn-valid").attr("attr-href", href);
+            selecttorModal.find(".btn-valid").attr("attr-appname", name);
+            selecttorModal.find(".btn-valid").attr("attr-event", "editappsave");
+            selecttorModal.find(".btn-close").show();
+            selecttorModal.find(".btn-valid").show();
 
-        selecttorModal.find(".btn-valid").attr("attr-href", href);
-        selecttorModal.find(".btn-valid").attr("attr-appname", name);
-        selecttorModal.find(".btn-valid").attr("attr-event", "editappsave");
-        selecttorModal.find(".btn-close").show();
-        selecttorModal.find(".btn-valid").show();
-
-        modal("show");
+            modal("show");
+        });
 
     });
 
