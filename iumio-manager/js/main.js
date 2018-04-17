@@ -2439,17 +2439,19 @@ $(document).ready(function () {
             var hddev = "";
             var haprod = "";
             var hdprod = "";
-            if ("undefined" !== typeof results.hosts_allowed_dev && null !== results.hosts_allowed_dev) {
-                hadev = (results.hosts_allowed_dev).join(";");
-            }
-            if ("undefined" !== typeof results.hosts_denied_dev && null !== results.hosts_denied_dev) {
-                hddev = (results.hosts_denied_dev).join(";");
-            }
-            if ("undefined" !== typeof results.hosts_allowed_prod && null !== results.hosts_allowed_prod) {
-                haprod = (results.hosts_allowed_prod).join(";");
-            }
-            if ("undefined" !== typeof results.hosts_denied_prod && null !== results.hosts_denied_prod) {
-                hdprod = (results.hosts_denied_prod).join(";");
+            if (null !== results) {
+                if ("undefined" !== typeof results.hosts_allowed_dev && null !== results.hosts_allowed_dev) {
+                    hadev = (results.hosts_allowed_dev).join(";");
+                }
+                if ("undefined" !== typeof results.hosts_denied_dev && null !== results.hosts_denied_dev) {
+                    hddev = (results.hosts_denied_dev).join(";");
+                }
+                if ("undefined" !== typeof results.hosts_allowed_prod && null !== results.hosts_allowed_prod) {
+                    haprod = (results.hosts_allowed_prod).join(";");
+                }
+                if ("undefined" !== typeof results.hosts_denied_prod && null !== results.hosts_denied_prod) {
+                    hdprod = (results.hosts_denied_prod).join(";");
+                }
             }
             selecttorModal.find(".modal-header").html("<strong class='text-center'>Edit "+name+" app configuration</strong>");
             selecttorModal.find(".modal-header").append("<p class='alert alert-danger onealert' style='display: none'></p>");
@@ -2463,8 +2465,8 @@ $(document).ready(function () {
                 '<div class="form-group text-center"> <label>Enabled</label> <div class="check"><input id="check" type="checkbox" name="enabled" '+((enabled === "yes")? "checked='checked'" : "")+' style="display: none"/><label for="check"><div class="box"><i class="fa fa-check"></i></div> </label></div></div>' +
                 '<div class="text-center "> <button data-toggle="collapse" data-target="#'+name+'-collapse" class=" btn btn-toolbar">Advanced options</button></div><br>' +
                 '<div id="'+name+'-collapse" class="collapse">' +
-                '<div class="row"> <div class="col-md-12 text-center text-lg-center text-info"><strong>Advanced options</div> <div class="form-group text-center col-md-6"> <label>Visible on dev</label><select name="vdev" class="form-control"><option value="null" '+(("undefined" === typeof  results.visibility_dev  || null === results.visibility_dev)? "selected" : "")+' >Not specified</option><option value="true" '+(("undefined" !== typeof  results.visibility_dev  && true === results.visibility_dev)? "selected" : "")+' >Yes</option><option value="false" '+(("undefined" !== typeof  results.visibility_dev  && false === results.visibility_dev)? "selected" : "")+' >No</option></select></div>' +
-                '<div class="form-group text-center col-md-6"> <label>Visible on prod</label> <select name="vprod" class="form-control"><option value="null" '+(("undefined" === typeof  results.visibility_prod  || null === results.visibility_prod)? "selected" : "")+' >Not specified</option><option value="true" '+(("undefined" !== typeof  results.visibility_prod  && true === results.visibility_prod)? "selected" : "")+' >Yes</option><option value="false" '+(("undefined" !== typeof  results.visibility_prod  && false === results.visibility_prod)? "selected" : "")+' >No</option></select></div>' +
+                '<div class="row"> <div class="col-md-12 text-center text-lg-center text-info"><strong>Advanced options</div> <div class="form-group text-center col-md-6"> <label>Visible on dev</label><select name="vdev" class="form-control"><option value="null" '+((null ===  results || "undefined" === typeof  results.visibility_dev  || null === results.visibility_dev)? "selected" : "")+' >Not specified</option><option value="true" '+((null !==  results && ("undefined" !== typeof  results.visibility_dev  && true === results.visibility_dev))? "selected" : "")+' >Yes</option><option value="false" '+((null !==  results && ("undefined" !== typeof  results.visibility_dev  && false === results.visibility_dev))? "selected" : "")+' >No</option></select></div>' +
+                '<div class="form-group text-center col-md-6"> <label>Visible on prod</label> <select name="vprod" class="form-control"><option value="null" '+((null ===  results || "undefined" === typeof  results.visibility_prod  || null === results.visibility_prod)? "selected" : "")+' >Not specified</option><option value="true" '+((null !==  results && ("undefined" !== typeof  results.visibility_prod  && true === results.visibility_prod))? "selected" : "")+' >Yes</option><option value="false" '+((null !==  results && ("undefined" !== typeof  results.visibility_prod  && false === results.visibility_prod))? "selected" : "")+' >No</option></select></div>' +
                 "<div class='form-group text-center col-md-12'><label>Hosts allowed on dev <br><small class='text-info'>(Split each host with ; delimiter)</small></label><input type='text' name='hostsdeva' class='form-control text-center' value='"+hadev+"' ></div>"+
                 "<div class='form-group text-center col-md-12'><label>Hosts denied on dev <br><small class='text-info'>(Split each host with ; delimiter)</small></label><input type='text' name='hostsdevd' class='form-control text-center' value='"+hddev+"' ></div>"+
                 "<div class='form-group text-center col-md-12'><label>Hosts allowed on prod <br><small class='text-info'>(Split each host with ; delimiter)</small></label><input type='text' name='hostsproda' class='form-control text-center' value='"+haprod+"' ></div>"+
