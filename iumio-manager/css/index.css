@@ -27,6 +27,11 @@
 
 }
 
+.fgm-sidebar-title {
+    text-transform: none!important;
+}
+
+
 .iumioDeployReload
 {
     cursor: pointer;
@@ -83,6 +88,7 @@
     justify-content: center;
 }
 
+
 .error-loader-text {
     display: block;
     padding-bottom: 10px;
@@ -92,10 +98,10 @@
 .validform, .iumio-loader-gen h3
 {
     text-align: center;
-    color: white;
+    color: #6d6d6d;
     font-weight: 900;
-    background-color: rgba(77, 117, 208, 0.8);
-    padding: 20px 20px 20px 20px;
+    padding: 0px 20px 20px 20px;
+    display: none;
 }
 
 
@@ -244,6 +250,7 @@
     transform: translate(-50%, -50%) scale(6);
 }
 
+
 @-webkit-keyframes animOn {
     40% {
         height: 20px;
@@ -352,17 +359,59 @@ margin-top: 5px!important;
 }
 
 
+
 .sidebar .sidebar-wrapper, body > .navbar-collapse .sidebar-wrapper {
     min-height: 10px!important;
 }
 
 .img-responsive-iumio-framework{
-    max-width: 90%!important;
+    max-width: 50%!important;
 }
+
+.h150 {
+    height: 150px;
+}
+
+
+.fgm-warning {
+    background-color: #f1ac65;
+}
+
+.fgm-danger {
+    background-color: #B0413E;
+}
+
+.fgm-black {
+    background-color: #080808;
+}
+
+.fgm-black a {
+    color:white;
+}
+
+
+
+.fgm-black .col-md-4 {
+    padding: 10px 10px 10px 10px;
+}
+
 
 .applist
 {
     word-break: break-all;
+}
+
+.fgm-header-container {
+    display: -webkit-box!important;
+    display: -ms-flexbox!important;
+    display: flex!important;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
 }
 
 /**********/
