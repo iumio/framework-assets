@@ -5,7 +5,7 @@
  *
  * (c) RAFINA DANY <dany.rafina@iumio.com>
  *
- * iumio Framework, an iumio component [https://iumio.com]
+ * iumio Framework, an iumio component [https://www.iumio.com]
  *
  * To get more information about licence, please check the licence file
  */
