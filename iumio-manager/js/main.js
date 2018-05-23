@@ -2291,6 +2291,66 @@ $(document).ready(function () {
 
 
     /**
+     * Event to edit 200 Event
+     */
+    var edit200Event = false;
+    $(document).on('click', ".event200", function () {
+        if (true === edit200Event) {
+            return ;
+        }
+        var selector = $(this);
+        edit200Event = true;
+        selector.addClass("event200-new").removeClass("event200");
+        var href = selector.attr("attr-href");
+        var content = selector.html();
+        if ("Disabled" === content) {
+            selector.html("<select class='event200-edit form-control-sm'>" +
+                "<option value='false' selected>Disabled</option>" +
+                "<option value='true'>Enabled</option>" +
+                "</select> " +
+                "<button type='button' class='event200-btn-save' attr-href='"+href+"'>Save</button>");
+        }
+        else {
+            selector.html("<select class='event200-edit form-control-sm'>" +
+                "<option value='false'>Disabled</option>" +
+                "<option value='true' selected>Enabled</option>" +
+                "</select> " +
+                "<button type='button' class='event200-btn-save' attr-href='"+href+"'>Save</button>");
+        }
+    });
+
+
+    /**
+     * Event to edit 404 Event
+     */
+    var edit404Event = false;
+    $(document).on('click', ".event404", function () {
+        if (true === edit404Event) {
+            return ;
+        }
+        var selector = $(this);
+        edit404Event = true;
+        selector.addClass("event404-new").removeClass("event404");
+        var href = selector.attr("attr-href");
+        var content = selector.html();
+        if ("Disabled" === content) {
+            selector.html("<select class='event404-edit form-control-sm'>" +
+                "<option value='false' selected>Disabled</option>" +
+                "<option value='true'>Enabled</option>" +
+                "</select> " +
+                "<button type='button' class='event404-btn-save' attr-href='"+href+"'>Save</button>");
+        }
+        else {
+            selector.html("<select class='event404-edit form-control-sm'>" +
+                "<option value='false'>Disabled</option>" +
+                "<option value='true' selected>Enabled</option>" +
+                "</select> " +
+                "<button type='button' class='event404-btn-save' attr-href='"+href+"'>Save</button>");
+        }
+    });
+
+
+    /**
      * Event to save edit u3i
      */
     $(document).on('click', ".u3i-btn-save", function () {
@@ -2308,6 +2368,70 @@ $(document).ready(function () {
                     $(".u3i-new").addClass("u3i").removeClass("u3i-new");
                     $(".u3i").html(content);
                     editu3i = false;
+                }
+                else
+                {
+                    operationError();
+                    return (0);
+                }
+            },
+            error : function (data) {
+                operationError(data);
+            }
+        });
+    });
+
+
+    /**
+     * Event to save edit 200
+     */
+    $(document).on('click', ".event200-btn-save", function () {
+        var content = $(".event200-edit option:selected").val();
+        var href = $(this).attr("attr-href");
+
+        $.ajax({
+            url : href,
+            type : 'POST',
+            dataType : 'json',
+            data : {"mode" : content},
+            success : function(data){
+                if (data['code'] === 200)
+                {
+                    $(".event200-new").addClass("event200").removeClass("event200-new");
+                    $(".event200").html((("true" == content)? "Enabled" : "Disabled"));
+                    edit200Event = false;
+                }
+                else
+                {
+                    operationError();
+                    return (0);
+                }
+            },
+            error : function (data) {
+                operationError(data);
+            }
+        });
+    });
+
+
+    /**
+     * Event to save edit 404
+     */
+    $(document).on('click', ".event404-btn-save", function () {
+        var content = $(".event404-edit option:selected").val();
+        var href = $(this).attr("attr-href");
+
+        $.ajax({
+            url : href,
+            type : 'POST',
+            dataType : 'json',
+            data : {"mode" : content},
+            success : function(data){
+                if (data['code'] === 200)
+                {
+                    $(".event404-new").addClass("event404").removeClass("event404-new");
+                    $(".event404").html((("true" == content)? "Enabled" : "Disabled"));
+                    edit200Event = false;
                 }
                 else
                 {
