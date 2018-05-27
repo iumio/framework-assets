@@ -1515,8 +1515,8 @@ $(document).ready(function () {
                 {
                     var rs = data['results'];
                     $('.dashb-app').html(rs['apps']['number']);
-                    $('.dashb-appena').html(rs['apps']['prefixed']);
-                    $('.dashb-apppre').html(rs['apps']['enabled']);
+                    $('.dashb-apppre').html(rs['apps']['prefixed']);
+                    $('.dashb-appena').html(rs['apps']['enabled']);
 
                     $('.dashb-dbco').html(rs['dbs']['number']);
 
