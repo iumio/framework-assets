@@ -257,10 +257,12 @@ $(document).ready(function () {
                 if (data['code'] === 200)
                 {
                     var a = data['results'];
-                    if (selector.html(""), 0 === a.length) return selector.append("<tr><td colspan='4'>No composer dependencies</td></tr>");
+                    if (selector.html(""), 0 === a.length)  {
+                        $("#composer-seach").parent().hide();
+                        return selector.append("<tr><td colspan='4'>No composer dependencies</td></tr>");
+                    }
+                    $("#composer-seach").parent().show();
                     $.each(a, function (t, a) {
-
-
                         if ("packages" === t) {
                             $.each(a, function (m, u) {
                                 selector.append("<tr><td>" + u.name + "</td><td>" + u.version + "</td><td>" + ((typeof  u.description !== "undefined")? u.description : "Aucune description")+ "</td><td>" + u.type + "</td><td>Prod</td></tr>");
@@ -283,8 +285,8 @@ $(document).ready(function () {
                             });
 
                         }
-                    })
-
+                    });
+                    $("#composer-seach").keyup();
                 }
             },
             error : function (data) {
@@ -1982,6 +1984,26 @@ $(document).ready(function () {
         })
     };
 
+    /**
+     * Search composer component by name
+     */
+    $(document).on('keyup', "#composer-seach", function () {
+        var input = $(this).val();
+        var filter, table, tr, td, i;
+        filter = input.toUpperCase();
+        table = document.getElementsByClassName("composerlist")[0];
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    });
 
 
     /**
