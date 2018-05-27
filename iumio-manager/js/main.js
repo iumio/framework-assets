@@ -561,7 +561,6 @@ $(document).ready(function () {
                             "<td>"+index+"</td>" +
                             "<td>"+((value['debug'] === true)? "Enabled" : "Disabled") +"</td>" +
                             "<td>"+((value['cache'] === 1)? "Enabled" : "Disabled")+"</td>" +
-                            "<td>"+value['console_debug']+"</td>" +
                             "<td><button class=' btn-info btn editsmartyconfig' attr-href='"+value['edit']+"' attr-href2='"+value['save']+"' attr-config='"+index+"'>ED</button></td>"+
                             "</tr>");
                     });
@@ -966,8 +965,6 @@ $(document).ready(function () {
         var compile         = $("input[type=checkbox][name=compile]:checked").val();
         var force           = $("input[type=checkbox][name=force]:checked").val();
         var sdebug          = $("input[type=checkbox][name=sdebug]:checked").val();
-        var console         = $("input[type=checkbox][name=console]:checked").val();
-
 
         var selecttorModal = $("#modalManager");
 
@@ -996,19 +993,13 @@ $(document).ready(function () {
         else
             sdebug = false;
 
-        if (typeof console !== "undefined")
-            console = "on";
-        else
-            console = "off";
-
-
         selecttorModal.find(".onealert").hide();
 
         $.ajax({
             url : href,
             type : 'POST',
             dataType : 'json',
-            data : {"debug" : debug, "cache" : cache, "compile" : compile, "force" : force, "sdebug" : sdebug, "console" : console},
+            data : {"debug" : debug, "cache" : cache, "compile" : compile, "force" : force, "sdebug" : sdebug},
             success : function(data){
                 if (data['code'] === 200)
                 {
@@ -1628,12 +1619,11 @@ $(document).ready(function () {
             processData:false,
 
             success : function(data){
-                var ndata = JSON.parse(data);
-                if (ndata['code'] === 200)
+                if (data['code'] === 200)
                 {
-                    getAppListSimple(true);
                     operationSuccess();
-                    $("#modalManager").find(".modal-body").append("<h5 class='text-center' style='color: limegreen'><em>"+ndata["ext"]+"</em></h5>");
+                    $("#modalManager").find(".modal-body").append("<h5 class='text-center' style='color: limegreen'><em>"+data["ext"]+"</em></h5>");
+                    getAppListSimple(true);
                 }
             },
             error : function (data) {
@@ -1684,9 +1674,12 @@ $(document).ready(function () {
             success : function(data){
                 if (data['code'] === 200)
                 {
+                    $("#modalManager").find(".modal-footer").hide();
                     operationSuccess();
-                    getUnlimitedLogs(true);
-                    getUnlimitedLogs2(true);
+                    $("#modalManager").find(".modal-body").append("<h5 class='text-center' style='color: limegreen'><em>Reloading the page...</em></h5>");
+                    setTimeout(function () {
+                        location.reload();
+                    }, 3000);
                 }
             },
             error : function (data) {
@@ -1951,8 +1944,10 @@ $(document).ready(function () {
             type : 'POST',
             dataType : 'json',
             success : function(data){
-                if (data['code'] === 200)
+                if (data['code'] === 200) {
                     operationSuccess();
+                    getAllAssets(true);
+                }
                 else
                     operationError();
             },
@@ -1974,8 +1969,10 @@ $(document).ready(function () {
             type : 'POST',
             dataType : 'json',
             success : function(data){
-                if (data['code'] === 200)
+                if (data['code'] === 200){
                     operationSuccess();
+                    getAllAssets(true);
+                }
                 else
                     operationError();
             },
@@ -2445,6 +2442,9 @@ $(document).ready(function () {
         });
     });
 
+
+
+
     /**
      * Event to override js routing
      */
@@ -2913,7 +2913,10 @@ $(document).ready(function () {
         selecttorModal.find(".modal-body").append("<br>");
         selecttorModal.find(".modal-body").append("<div class='container'><div class='row'>");
 
-        selecttorModal.find(".modal-body").append("<div class='form-group text-center'><label>Package</label><input type='file' id='apppackage' name='apppackage' class='form-control text-center'></div>");
+        selecttorModal.find(".modal-body").append("<div class='form-group text-center'><div class=\"upload-btn-wrapper\">\n" +
+            "  <button class=\"btn\">Upload the app package</button>\n" +
+            "  <input type=\"file\" id='apppackage' name='apppackage'  />\n" +
+            "</div></div>");
         selecttorModal.find(".modal-body").append("</div></div>");
         selecttorModal.find(".modal-body").append("</div></div>");
 
@@ -2928,9 +2931,15 @@ $(document).ready(function () {
         modal("show");
     });
 
+    /**
+     * Add file name when a file was uploaded
+     */
     $(document).on("change", "#apppackage", function (e) {
         e.preventDefault();
+        $(".apppackinfo").remove();
         var selecttorModal = $("#modalManager");
+        var filename = $(this)[0].files[0].name;
+        $(this).after("<p class='text-info apppackinfo' style='margin-top: 10px'><strong>App package</strong> : "+filename+"</p>");
         selecttorModal.find(".btn-valid").html("Install");
         selecttorModal.find(".btn-valid").show();
     });
@@ -3037,7 +3046,6 @@ $(document).ready(function () {
                         '<div class="form-group text-center"><label>Compile Check</label> <div class="check"><input id="check2" name="compile" '+((result['compile_check'] === true)? "checked='checked'" : "")+' type="checkbox" style="display: none" /><label for="check2"><div class="box"><i class="fa fa-check"></i></div> </label></div></div>' +
                         '<div class="form-group text-center"><label>Force to compile</label> <div class="check"><input id="check3" name="force" '+((result['force_compile'] === true)? "checked='checked'" : "")+' type="checkbox" style="display: none" /><label for="check3"><div class="box"><i class="fa fa-check"></i></div> </label></div></div>' +
                         '<div class="form-group text-center"><label>Smarty Debug</label> <div class="check"><input id="check4" name="sdebug" '+((result['smarty_debug'] === true)? "checked='checked'" : "")+' type="checkbox" style="display: none" /><label for="check4"><div class="box"><i class="fa fa-check"></i></div> </label></div></div>' +
-                        '<div class="form-group text-center"><label>Console</label> <div class="check"><input id="check5" name="console" '+((result['console_debug'] === "on")? "checked='checked'" : "")+' type="checkbox" style="display: none" /><label for="check5"><div class="box"><i class="fa fa-check"></i></div> </label></div></div>' +
                         '</div>');
                     selecttorModal.find(".modal-body").append("</div></div>");
 
@@ -3655,14 +3663,6 @@ $(document).ready(function () {
             getAllLocale(true);
         }
     }, 7000);
-
-    setInterval(function () {
-        if (noapp === false)
-        {
-            getUnlimitedLogs(true);
-            getUnlimitedLogs2(true);
-        }
-    }, 10000);
 
     setInterval(function () {
         loadElapsedTimeDeployment($(".last_up_req_deploy"));
