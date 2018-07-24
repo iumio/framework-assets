@@ -21,8 +21,7 @@ var Mercure = function () {
      * Get the json Routing File contain
      * @returns {number} 1 if a success -  0 if failure
      */
-    this.getJson =  function()
-    {
+    this.getJson = function () {
         if (typeof mercuredata !== "undefined")
             this.json = mercuredata;
         else
@@ -34,8 +33,7 @@ var Mercure = function () {
      * Check validity of required elements for Route Alpha
      * @returns {number} 1 if a success -  0 if failure
      */
-    this.checkValidityAlpha = function()
-    {
+    this.checkValidityAlpha = function () {
         if (this.getJson() === 0)
             return (0);
         if (typeof document.getElementById("mercure_app_referer") === "undefined")
@@ -68,23 +66,29 @@ var Mercure = function () {
      * @param name Route name
      * @returns {string} Return the route value or null [Null Routing Exception] for no route
      */
-    this.getRouteAlpha =  function(name) {
+    this.getRouteAlpha = function (name) {
         if (this.checkValidityAlpha() === 0)
             (this.makeException("CRITICAL", "Route Alpha Error : Cannot get mercure components",
                 "Route Alpha Error : Cannot get mercure components"));
-        var app = document.getElementById("mercure_app_referer").getAttribute("referer-app");
         var file = this.json;
-        if (typeof file[0] === "undefined" && typeof file[0][app] === "undefined")
-            (this.makeException("CRITICAL", "Route Alpha Error : Mercure file is empty or App is undefined",
-                "Route Alpha Error : Mercure file is empty or App is undefined"));
-        var routes = file[0][app];
-        for (var route in routes) {
-            var mercure = routes[route];
-                if (mercure.name === name && mercure.params === "")
-                    return (((this.fullUrl)? this.baseUrl() : "") + this.partUrl() + mercure.path);
+        if (typeof file[0] === "undefined")
+            (this.makeException("CRITICAL", "Route Alpha Error : Mercure file is empty",
+                "Route Alpha Error : Mercure file is empty"));
+
+        for (var apps in file) {
+            var it = file[apps];
+            for (var iterator in it) {
+                var routes = it[iterator];
+                for (var route in routes) {
+                    var mercure = routes[route];
+                    if (mercure.name === name && mercure.params === "")
+                        return (((this.fullUrl) ? this.baseUrl() : "") + this.partUrl() + mercure.path);
+                }
+            }
         }
-        (this.makeException("CRITICAL", "Route Alpha Error : Cannot get route by name",
-            "Route Alpha Error : Cannot get route by name"));
+        this.makeException("CRITICAL", "Route Alpha Error : Cannot get route by name",
+            "Route Alpha Error : Cannot get route by name");
+
     };
 
     /**
@@ -94,8 +98,7 @@ var Mercure = function () {
      * @param appname App name
      * @returns {string} Return the route value or null [Null Routing Exception] for no route
      */
-    this.getRouteBeta =  function(name, parameters, appname)
-    {
+    this.getRouteBeta = function (name, parameters, appname) {
         if (this.getJson() === 0)
             (this.makeException("CRITICAL", "Route Beta Error : Json mercure elements is not defined",
                 "Route Beta Error : Json mercure elements is not defined"));
@@ -103,28 +106,39 @@ var Mercure = function () {
         if (typeof file[0] === "undefined" && typeof file[0][appname] === "undefined")
             (this.makeException("CRITICAL", "Route Beta Error : Mercure file is empty or App is undefined",
                 "Route Beta Error : Mercure file is empty or App is undefined"));
-        var routes = file[0][appname];
-        for (var route in routes) {
-            var mercure = routes[route];
-            if (mercure.name === name && mercure.params !== "")
-            {
-                var onemercure = mercure.path;
-                var ind = onemercure.split("/");
-                for (var key in parameters) {
-                    if (parameters.hasOwnProperty(key)) {
-                        var val = parameters[key];
-                        for (var i = 0; i < ind.length; i++)
-                        {
-                            if ("{"+key+"}" === ind[i])
-                                ind[i] = val;
-                        }
 
-                    }
+        var routes = null;
+
+        for (var apps in file) {
+            var it = file[apps];
+            for (var iterator in it) {
+                if (iterator === appname) {
+                    routes = it[iterator];
+                    break;
                 }
-                onemercure = ind.join("/");
-                return (((this.fullUrl)? this.baseUrl() : "") + onemercure);
             }
         }
+        if (null !== routes) {
+            for (var route in routes) {
+                var mercure = routes[route];
+                if (mercure.name === name && mercure.params !== "") {
+                    var onemercure = mercure.path;
+                    var ind = onemercure.split("/");
+                    for (var key in parameters) {
+                        if (parameters.hasOwnProperty(key)) {
+                            var val = parameters[key];
+                            for (var i = 0; i < ind.length; i++) {
+                                if ("{" + key + "}" === ind[i])
+                                    ind[i] = val;
+                            }
+                        }
+                    }
+                    onemercure = ind.join("/");
+                    return (((this.fullUrl) ? this.baseUrl() : "") + onemercure);
+                }
+            }
+        }
+
         (this.makeException("CRITICAL", "Route Beta Error : Cannot get route by name",
             "Route Beta Error : Cannot get route by name"));
     };
@@ -135,8 +149,7 @@ var Mercure = function () {
      * @param parameters Parameters for route
      * @returns {string} Return the route value or null [Null Routing Exception] for no route
      */
-    this.getRouteGamma =  function(name, parameters)
-    {
+    this.getRouteGamma = function (name, parameters) {
         if (this.checkValidityAlpha() === 0)
             (this.makeException("CRITICAL", "Route Gamma Error : Cannot get mercure components",
                 "Route Gamma Error : Cannot get mercure components"));
@@ -145,26 +158,29 @@ var Mercure = function () {
         if (typeof file[0] === "undefined" && typeof file[0][app] === "undefined")
             (this.makeException("CRITICAL", "Route Gamma Error : Mercure file is empty or App is undefined",
                 "Route Gamma Error : Mercure file is empty or App is undefined"));
-        var routes = file[0][app];
-        for (var route in routes) {
-            var mercure = routes[route];
-            if (mercure.name === name && mercure.params !== "")
-            {
-                var onemercure = mercure.path;
-                var ind = onemercure.split("/");
-                for (var key in parameters) {
-                    if (parameters.hasOwnProperty(key)) {
-                        var val = parameters[key];
-                        for (var i = 0; i < ind.length; i++)
-                        {
-                            if ("{"+key+"}" === ind[i])
-                               ind[i] = val;
-                        }
 
+        for (var apps in file) {
+            var it = file[apps];
+            for (var iterator in it) {
+                var routes = it[iterator];
+                for (var route in routes) {
+                    var mercure = routes[route];
+                    if (mercure.name === name && mercure.params !== "") {
+                        var onemercure = mercure.path;
+                        var ind = onemercure.split("/");
+                        for (var key in parameters) {
+                            if (parameters.hasOwnProperty(key)) {
+                                var val = parameters[key];
+                                for (var i = 0; i < ind.length; i++) {
+                                    if ("{" + key + "}" === ind[i])
+                                        ind[i] = val;
+                                }
+                            }
+                        }
+                        onemercure = ind.join("/");
+                        return (((this.fullUrl) ? this.baseUrl() : "") + onemercure);
                     }
                 }
-                onemercure = ind.join("/");
-                return (((this.fullUrl)? this.baseUrl() : "") + onemercure);
             }
         }
         (this.makeException("CRITICAL", "Route Gamma Error : Cannot get route by name",
@@ -177,8 +193,7 @@ var Mercure = function () {
      * @param appname App name
      * @returns {string} Return the route value or null [Null Routing Exception] for no route
      */
-    this.getRouteDelta =  function(name, appname)
-    {
+    this.getRouteDelta = function (name, appname) {
         if (this.getJson() === 0)
             (this.makeException("CRITICAL", "Route Delta Error : Json mercure elements is not defined",
                 "Route Delta Error : Json mercure elements is not defined"));
@@ -186,11 +201,25 @@ var Mercure = function () {
         if (typeof file[0] === "undefined" && typeof file[0][appname] === "undefined")
             (this.makeException("CRITICAL", "Route Delta Error : Mercure file is empty or App is undefined",
                 "Route Delta Error : Mercure file is empty or App is undefined"));
-        var routes = file[0][appname];
-        for (var route in routes) {
-            var mercure = routes[route];
-            if (mercure.name === name && mercure.params === "")
-                return (((this.fullUrl)? this.baseUrl() : "") + mercure.path);
+
+
+        var routes = null;
+
+        for (var apps in file) {
+            var it = file[apps];
+            for (var iterator in it) {
+                if (iterator === appname) {
+                    routes = it[iterator];
+                    break;
+                }
+            }
+        }
+        if (null !== routes) {
+            for (var route in routes) {
+                var mercure = routes[route];
+                if (mercure.name === name && mercure.params === "")
+                    return (((this.fullUrl) ? this.baseUrl() : "") + mercure.path);
+            }
         }
         (this.makeException("CRITICAL", "Route Delta Error : Cannot get route by name",
             "Route Delta Error : Cannot get route by name"));
@@ -203,14 +232,13 @@ var Mercure = function () {
      * @param appname App name for route (optionnal)
      * @returns {string} Return the route value or null [Null Routing Exception] for no route
      */
-    this.getRoute = function (name, parameters, appname)
-    {
+    this.getRoute = function (name, parameters, appname) {
         if (typeof name === "undefined")
             (this.makeException("CRITICAL", "Get Route Error : route name is undefined",
                 "Get Route Error : route name is undefined"));
         else if (!parameters && !appname)
             return (this.getRouteAlpha(name));
-        else if (parameters && typeof !appname)
+        else if (parameters && typeof appname !== 'string')
             return (this.getRouteGamma(name, parameters));
         else if (parameters && typeof appname)
             return (this.getRouteBeta(name, parameters, appname));
@@ -225,27 +253,30 @@ var Mercure = function () {
      * Change the value of full url
      * @param status Status value (true or false)
      */
-    this.setFullUrl = function(status)
-    {
+    this.setFullUrl = function (status) {
         if (typeof status === "boolean")
-          this.fullUrl = status;
+            this.fullUrl = status;
         else
             throw {
-                name:        "Mercure Error",
-                level:       "CRITICAL",
-                message:     "Error detected. Full Url parameters must be a boolean.",
+                name: "Mercure Error",
+                level: "CRITICAL",
+                message: "Error detected. Full Url parameters must be a boolean.",
                 htmlMessage: "Error detected. Full Url parameters must be a boolean.",
-                toString:    function(){return this.name + ": " + this.message;}
+                toString: function () {
+                    return this.name + ": " + this.message;
+                }
             };
     };
 
     this.makeException = function (level, message, htmlMessage) {
         throw {
-            name:        "Mercure Error",
-            level:       level,
-            message:     message,
+            name: "Mercure Error",
+            level: level,
+            message: message,
             htmlMessage: htmlMessage,
-            toString:    function(){return this.name + ": " + this.message;}
+            toString: function () {
+                return this.name + ": " + this.message;
+            }
         };
     }
 };
