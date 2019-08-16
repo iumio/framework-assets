@@ -46,13 +46,16 @@ $(document).ready(function () {
     var formatDate = function(date) {
         var hours = date.getHours();
         var minutes = date.getMinutes();
-        var ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12;
-        hours = hours ? hours : 12; // the hour '0' should be '12'
+        var seconds = date.getSeconds();
+        var month = date.getMonth() < 10 ? '0'+(date.getMonth()+ 1) : (date.getMonth()+ 1);
+        var day = date.getDate() < 10 ? '0'+date.getDate() : date.getDate();
+
+        hours = hours < 10 ? '0'+hours : hours;
+        seconds = seconds < 10 ? '0'+seconds : seconds;
         minutes = minutes < 10 ? '0'+minutes : minutes;
-        var strTime = hours + ':' + minutes + ' ' + ampm;
-        return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
-    }
+        var strTime = hours + ':' + minutes + ':' + seconds ;
+        return date.getFullYear() + "-" + month + "-" + day + " " + strTime;
+    };
 
     /**
      * Open or close a modal
@@ -135,9 +138,28 @@ $(document).ready(function () {
 
                     $.each(results, function (index, value) {
                         var datelog = formatDate(new Date(value['time'] * 1000));
-                        selector.append("<li style='padding-top: 10px;'><ul><li>Date : "+datelog+"</li><li>IP : "+value['client_ip']+"</li> <li>Uidie : <a href='"+value['log_url']+"'>"+value['uidie']+"</a> </li> <li>Message :  "+value['explain']+"</li></ul></li>");
-                    })
-
+                        selector.append(
+                            "<li style='padding-top: 10px;' onclick='location.href=\""+value['log_url']+"\"' class='link'>" +
+                            "<div class='panel panel-danger panel-mod-"+(value["code"] == 404? "yellow-error" : ((value["code"] == "200")? "green-error" : ""))+"'>" +
+                            "<div class='panel-heading "+(value["code"] == 404? "yellow-error" : ((value["code"] == "200")? "green-error" : ""))+"'>"
+                            +value["code"]+' - '+value["code_title"]+
+                            "</div><div class='panel-body panel-body-error'>" +
+                            "<ul class='list-group list-group-error'>" +
+                            "<li class='list-group-item list-group-item-info'>" +
+                            "<div class='row'>" +
+                            " <div class='col-md-12'>" +
+                            "<strong>Date </strong>" +
+                            " </div>" +
+                            "<div class='col-md-12'>" +
+                            datelog+
+                            "</div></div>" +
+                            "</li><li class='list-group-item '><div class='row'><div class='col-md-12'><strong>Referer </strong></div><div class='col-md-12'>" +
+                            value['client_ip'] +
+                            '</div> </div></li><li class="list-group-item "><div class="row"><div class="col-md-12"><strong>Message </strong> </div><div class="col-md-12">'+
+                            value['explain']+
+                            '</div> </div> </li> </ul> </div> </div></li>'
+                        );
+                    });
                 }
             },
             error : function (data) {
@@ -265,13 +287,13 @@ $(document).ready(function () {
                     $.each(a, function (t, a) {
                         if ("packages" === t) {
                             $.each(a, function (m, u) {
-                                selector.append("<tr><td>" + u.name + "</td><td>" + u.version + "</td><td>" + ((typeof  u.description !== "undefined")? u.description : "Aucune description")+ "</td><td>" + u.type + "</td><td>Prod</td></tr>");
+                                selector.append("<tr><td>" + u.name + "</td><td>" + u.version + "</td><td>" + ((typeof  u.description !== "undefined")? u.description : "Aucune description")+ "</td><td>" + u.type + "</td><td>Prod</td><td>Installed</td><td><button type='button' class='removeComponent btn btn-danger' attr-package='"+(u.name)+"'  attr-href='"+(data['globalRemoveUrl'])+"'>Remove</button> </td></tr>");
 
                             });
                         }
                         else if ("packages-dev" === t) {
                             $.each(a, function (m, u) {
-                                selector.append("<tr><td>" + u.name + "</td><td>" + u.version + "</td><td>" + ((typeof  u.description !== "undefined")? u.description : "Aucune description")+ "</td><td>" + u.type + "</td><td>Dev</td></tr>");
+                                selector.append("<tr><td>" + u.name + "</td><td>" + u.version + "</td><td>" + ((typeof  u.description !== "undefined")? u.description : "Aucune description")+ "</td><td>" + u.type + "</td><td>Dev</td><td>Installed</td><td><button type='button' class='removeComponent btn btn-danger' attr-package='"+(u.name)+"' attr-href='"+(data['globalRemoveUrl'])+"' >Remove</button> </td></tr>");
 
                             });
                         }
@@ -338,6 +360,46 @@ $(document).ready(function () {
     };
 
     /**
+     * get services file list
+     */
+    var getRendererList = function (reload) {
+        var selector = $('.rendererlist');
+        if (typeof selector.attr("attr-href") === "undefined")
+            return (1);
+
+        $.ajax({
+            url : selector.attr("attr-href"),
+            type : 'POST',
+            dataType : 'json',
+            success : function(data){
+                if (data['code'] === 200)
+                {
+                    var results = data['results'];
+                    selector.html("");
+                    selector.html("");
+                    if ($.isEmptyObject(results))
+                        return (selector.append("<tr><td colspan='3'>No renderer available</td></tr>"));
+
+                    $.each(results, function (index, value) {
+                        //console.log(index);
+                        selector.append("<tr>" +
+                            "<td>"+index+"</td>" +
+                            "<td>"+((value['enabled']) ? "enabled" : "disabled")+"</td>" +
+                            "<td><button class=' "+((value['enabled']) ? "btn-danger" : "btn-success")+" btn enadisarenderer' attr-href='"+value['enadisa']+"'  attr-action='"+((value['enabled']) ? "disable" : "enable")+"' attr-index='"+index+"' >"+((value['enabled']) ? "Disable" : "Enable")+"</button></td>"+
+                            "</tr>");
+
+                    });
+
+                }
+            },
+            error : function (data) {
+                if (typeof reload !== 'undefined')
+                    operationError(data);
+            }
+        });
+    };
+
+    /**
      * Infinite scroll for logs for dev
      */
     $('.iumio-unlimited-log-display').bind('scroll', function(){
@@ -383,7 +445,7 @@ $(document).ready(function () {
                     $.each(results, function (index, value) {
                         var dateLog = formatDate(new Date(value['time'] * 1000));
                         selector.append("<tr>" +
-                            "<td><a href='"+value['log_url']+"'>"+value['uidie']+"</a></td>" +
+                            "<td><a href='"+value['log_url']+"'>"+value['uide']+"</a></td>" +
                             "<td>"+dateLog+"</td>" +
                             "<td>"+value['code']+"</td>" +
                             "<td>"+value['client_ip']+"</td>" +
@@ -437,7 +499,7 @@ $(document).ready(function () {
                     $.each(results, function (index, value) {
                         var dateLog = formatDate(new Date(value['time'] * 1000));
                         selector.append("<tr>" +
-                            "<td><a href='"+value['log_url']+"'>"+value['uidie']+"</a></td>" +
+                            "<td><a href='"+value['log_url']+"'>"+value['uide']+"</a></td>" +
                             "<td>"+dateLog+"</td>" +
                             "<td>"+value['code']+"</td>" +
                             "<td>"+value['client_ip']+"</td>" +
@@ -577,6 +639,44 @@ $(document).ready(function () {
 
 
     /**
+     * get twig configuration list
+     */
+    var getAllTwigConfigs = function (reload) {
+
+        var selector = $('.twigconfigs');
+        if (typeof selector.attr("attr-href") === "undefined")
+            return (1);
+        $.ajax({
+            url : selector.attr("attr-href"),
+            type : 'POST',
+            dataType : 'json',
+            success : function(data){
+                if (data['code'] === 200)
+                {
+                    var results = data['results'];
+                    selector.html("");
+                    if (results.length === 0)
+                        return (selector.append("<tr><td colspan='4'>No twig configurations</td></tr>"));
+
+                    $.each(results, function (index, value) {
+                        selector.append("<tr>" +
+                            "<td>"+index+"</td>" +
+                            "<td>"+((value['debug'] === true)? "Enabled" : "Disabled") +"</td>" +
+                            "<td>"+((value['cache'] === true)? "Enabled" : "Disabled")+"</td>" +
+                            "<td><button class=' btn-info btn edittwigconfig' attr-href='"+value['edit']+"' attr-href2='"+value['save']+"' attr-config='"+index+"'>ED</button></td>"+
+                            "</tr>");
+                    });
+                }
+            },
+            error : function (data) {
+                if (typeof reload !== 'undefined')
+                    operationError(data);
+            }
+        });
+    };
+
+
+    /**
      * get app list
      */
     var simpleapps = null;
@@ -603,7 +703,8 @@ $(document).ready(function () {
                             "<td>"+value['name']+"</td>" +
                             "<td>"+value['enabled']+"</td>" +
                             "<td>"+((value['prefix'] !== "")? "/"+value['prefix'] : "no prefix")+"</td>" +
-                            "<td>"+value['class']+"</td>" +
+                            "<td>"+value['namespace']+"</td>" +
+                            "<td>"+value['renderer']+"</td>" +
                             "<td><button class=' btn-info btn toeditapp' attr-href2='"+value['link_edit_save']+"' attr-appname='"+value['name']+"' attr-prefix='"+value['prefix']+"' attr-enabled='"+value['enabled']+"' attr-href-config='"+value['link_config']+"'>ED</button></td>"+
                             "<td><button class='btn-info btn deleteapp' attr-href='"+value['link_remove']+"' attr-appname='"+value['name']+"'>DE</button></td>"+
                             "<td><button class='btn-info btn exportapp' attr-href='"+value['link_export']+"' attr-appname='"+value['name']+"'>EXP</button></td>"+
@@ -644,6 +745,34 @@ $(document).ready(function () {
             },
             error : function (data) {
                 console.error("Cannot get the app : "+appname+ " - "+JSON.stringify(data))
+            }
+        })
+    };
+
+
+    /**
+     * Get all renderers
+     * @param href Link to renderers
+     * @param callback the callback
+     * @returns {number}
+     */
+    var getAvailableRenderers = function (href, callback) {
+
+        $.ajax({
+            url : href,
+            type : 'POST',
+            dataType : 'json',
+            data : {},
+            success : function(data){
+                if (data['code'] === 200) {
+                    callback(data["results"]);
+                }
+                else {
+                    console.error("Cannot get the renderer : - Code : "+data['code']+" - "+JSON.stringify(data));
+                }
+            },
+            error : function (data) {
+                console.error("Cannot get the app : - "+JSON.stringify(data))
             }
         })
     };
@@ -791,8 +920,9 @@ $(document).ready(function () {
     var createOneApp = function (href) {
         var name           = $("input[type=text][name=appname]").val();
         var template       = $("input[type=checkbox][name=template]:checked" ).val();
-        var enabled      = $( "input[type=checkbox][name=enabled]:checked" ).val();
-        var prefix           = $("input[type=text][name=prefix]").val();
+        var enabled        = $( "input[type=checkbox][name=enabled]:checked" ).val();
+        var prefix         = $("input[type=text][name=prefix]").val();
+        var renderer       = $("select[name=renderer] option:selected").val();;
         var selecttorModal = $("#modalManager");
 
         if (name === "")
@@ -802,19 +932,9 @@ $(document).ready(function () {
             return (false);
         }
 
-        if (name === "App" || name.length <= 3 || !isValidStr(name))
+        if (name === "App" || name.length < 3 || !isValidStr(name))
         {
-            selecttorModal.find(".onealert").html("Oups! Error on app name. <br>Your app name must to end with 'App' keyword (example TestApp) ");
-            selecttorModal.find(".onealert").show();
-            return (false);
-        }
-        var p2    = name[name.length - 1];
-        var p1    = name[name.length - 2];
-        var a     = name[name.length - 3];
-        var conca = a + p1 + p2;
-
-        if (conca !== "App" && isValidStr(name)) {
-            selecttorModal.find(".onealert").html("Oups! Error on app name. <br>Your app name must to end with 'App' keyword (example TestApp) ");
+            selecttorModal.find(".onealert").html("Oups! Error on app name. <br>Your app name does not respect the naming policy. [Minimun characters : 3, with only alphabetic characters] (example Test) ");
             selecttorModal.find(".onealert").show();
             return (false);
         }
@@ -835,7 +955,7 @@ $(document).ready(function () {
             url : href,
             type : 'POST',
             dataType : 'json',
-            data : {"name" : name, "template" : template, "enabled" : enabled, "prefix" : prefix},
+            data : {"name" : name, "template" : template, "enabled" : enabled, "prefix" : prefix, 'renderer' : renderer},
             success : function(data){
                 priorTask = 0;
                 if (data['code'] === 200)
@@ -1029,6 +1149,78 @@ $(document).ready(function () {
 
 
     /**
+     * save twig configuration
+     */
+
+    var saveTwigConfiguration = function (href) {
+        var debug                    = $("input[type=checkbox][name=debug]:checked").val();
+        var cache                    = $("input[type=checkbox][name=cache]:checked").val();
+        var strict_variables         = $("input[type=checkbox][name=strict_variables]:checked").val();
+        var optimizations            = $("input[type=checkbox][name=optimizations]:checked").val();
+        var auto_reload              = $("input[type=checkbox][name=auto_reload]:checked").val();
+
+        var selecttorModal = $("#modalManager");
+
+        if (typeof debug !== "undefined")
+            debug = true;
+        else
+            debug = false;
+
+        if (typeof cache !== "undefined")
+            cache = true;
+        else
+            cache = false;
+
+        if (typeof strict_variables !== "undefined")
+            strict_variables = true;
+        else
+            strict_variables = false;
+
+        if (typeof optimizations !== "undefined")
+            optimizations = true;
+        else
+            optimizations = false;
+
+        if (typeof auto_reload !== "undefined")
+            auto_reload = true;
+        else
+            auto_reload = false;
+
+        selecttorModal.find(".onealert").hide();
+
+        $.ajax({
+            url : href,
+            type : 'POST',
+            dataType : 'json',
+            data : {"debug" : debug, "cache" : cache, "strict_variables" : strict_variables,
+                "optimizations" : optimizations, "auto_reload" : auto_reload},
+            success : function(data){
+                if (data['code'] === 200)
+                {
+                    getAllTwigConfigs(true);
+                    if (data['code'] === 200)
+                    {
+                        operationSuccess();
+                        var selecttorModal = $("#modalManager");
+                        selecttorModal.find(".btn-close").hide();
+                        setTimeout(function () {
+                            location.reload();
+                        }, 5000)
+                    }
+                    else
+                        operationError();
+                }
+                else
+                    operationError();
+            },
+            error : function (data) {
+                operationError(data);
+            }
+        });
+    };
+
+
+    /**
      * save edit app
      */
 
@@ -1044,7 +1236,7 @@ $(document).ready(function () {
         var hostsdevd      = $("input[type=text][name=hostsdevd]").val();
         var hostsproda     = $("input[type=text][name=hostsproda]").val();
         var hostsprodd     = $("input[type=text][name=hostsprodd]").val();
-
+        var renderer       = $("select[name=renderer] option:selected").val();
 
         var selecttorModal = $("#modalManager");
 
@@ -1061,7 +1253,7 @@ $(document).ready(function () {
             dataType : 'json',
             data : {"prefix" : prefix, "enabled" : enabled, "vdev" : vdev,
                 "vprod" : vprod, "hostsdeva" : hostsdeva, "hostsdevd" : hostsdevd,
-                "hostsproda" : hostsproda, "hostsprodd" : hostsprodd},
+                "hostsproda" : hostsproda, "hostsprodd" : hostsprodd, "renderer" : renderer},
             success : function(data){
                 if (data['code'] === 200)
                 {
@@ -1340,6 +1532,33 @@ $(document).ready(function () {
             }
         })
     };
+
+    /**
+     * Remove composer package
+     * @param url
+     * @param name
+     */
+    var removePackage = function (url, name) {
+
+        $.ajax({
+            url : url,
+            type : 'POST',
+            dataType : 'json',
+            data : {'name' : name},
+            success : function(data){
+                if (data['code'] === 200)
+                {
+                    operationSuccess();
+                    composer(true);
+                }
+            },
+            error : function (data) {
+                operationError(data);
+            }
+        })
+    };
+
+
 
 
     /**
@@ -1936,6 +2155,29 @@ $(document).ready(function () {
     };
 
     /**
+     * enable or disable a renderer
+     * @param url Url to enable or disable it
+     */
+    var enableDisableRenderer = function (url) {
+
+        $.ajax({
+            url : url,
+            type : 'POST',
+            dataType : 'json',
+            success : function(data){
+                getRendererList(true);
+                if (data['code'] === 200)
+                    operationSuccess();
+                else
+                    operationError();
+            },
+            error : function (data) {
+                operationError(data);
+            }
+        })
+    };
+
+    /**
      * Publish assets
      * @param url Url to publish
      */
@@ -2292,6 +2534,30 @@ $(document).ready(function () {
         modal("show");
     });
 
+
+    /**
+     * Event to disable or enable a renderer
+     */
+    $(document).on('click', ".enadisarenderer", function () {
+        var selector = $(this);
+        var href = selector.attr("attr-href");
+        var name = selector.attr("attr-index");
+        var action = selector.attr("attr-action");
+
+        var selecttorModal = $("#modalManager");
+        selecttorModal.find(".modal-header").html("<strong class='text-center'>"+((action == "enable")? "Enable" : "Disable") +" "+name+" renderer</strong>");
+        selecttorModal.find(".modal-body").html("<h4 class='text-center'>Are you sure you want to "+((action == "enable")? "enable" : "disable") +" <strong>"+name+"</strong> renderer ?</h4>");
+        selecttorModal.find(".btn-close").html("No");
+        selecttorModal.find(".btn-valid").html("Yes");
+
+        selecttorModal.find(".btn-valid").attr("attr-href", href);
+        selecttorModal.find(".btn-valid").attr("attr-event", "enadisarenderer");
+        selecttorModal.find(".btn-close").show();
+        selecttorModal.find(".btn-valid").show();
+
+        modal("show");
+    });
+
     /**
      * Event to edit u3i
      */
@@ -2518,6 +2784,9 @@ $(document).ready(function () {
             case "removeservice":
                 removeService(href);
                 break;
+            case "enadisarenderer":
+                enableDisableRenderer(href);
+                break;
             case "editdatabasesave":
                 saveDatabaseConfiguration(href);
                 break;
@@ -2548,6 +2817,9 @@ $(document).ready(function () {
 
             case "editsmartysave":
                 saveSmartyConfiguration(href);
+                break;
+            case "edittwigsave":
+                saveTwigConfiguration(href);
                 break;
             case "editappsave":
                 saveApp(href);
@@ -2600,6 +2872,9 @@ $(document).ready(function () {
             case "deployprodconfirm":
                 deployed(href);
                 break;
+            case "removePackage":
+                removePackage(href, selector.attr("attr-package"));
+                break;
 
         }
     });
@@ -2611,6 +2886,7 @@ $(document).ready(function () {
     $(document).on('click', ".createapp", function () {
         var selector = $(this);
         var href = selector.attr("attr-href");
+        var hrefRenderers = selector.attr("attr-href-renderer");
 
         var selecttorModal = $("#modalManager");
 
@@ -2624,20 +2900,37 @@ $(document).ready(function () {
         selecttorModal.find(".modal-body").append("</div></div>");
         selecttorModal.find(".modal-body").append("<div class='form-group text-center'><label>Prefix</label><input type='text' name='prefix' class='form-control'></div>");
         selecttorModal.find(".modal-body").append("</div></div>");
-        selecttorModal.find(".modal-body").append('<div class="container-new">' +
-            '<div class="form-group text-center"> <label>Default template</label> <div class="check"><input id="check" type="checkbox" name="template" style="display: none"/><label for="check"><div class="box"><i class="fa fa-check"></i></div> </label></div></div>' +
-            '<div class="form-group text-center"><label>Enabled</label> <div class="check"><input id="check1" name="enabled"  type="checkbox" style="display: none" /><label for="check1"><div class="box"><i class="fa fa-check"></i></div> </label></div></div>' +
-            '</div>');
 
-        selecttorModal.find(".btn-close").html("Close");
-        selecttorModal.find(".btn-valid").html("Create");
+        var selectRender = "<div class='form-group text-center'><label>Renderer</label><select class='form-control text-center' name='renderer'>";
 
-        selecttorModal.find(".btn-valid").attr("attr-href", href);
-        selecttorModal.find(".btn-valid").attr("attr-event", "createvalidapp");
-        selecttorModal.find(".btn-close").show();
-        selecttorModal.find(".btn-valid").show();
+        getAvailableRenderers(hrefRenderers, function (results) {
+            $.each(results, function (index, val) {
 
-        modal("show");
+                selectRender += "<option value='"+index+"' "+((index === results.renderer)? 'selected' : '')+">"+index+"</option>";
+            });
+            selectRender += "</select>";
+
+            selecttorModal.find(".modal-body").append(selectRender);
+            selecttorModal.find(".modal-body").append("</div></div>");
+
+
+
+            selecttorModal.find(".modal-body").append('<div class="container-new">' +
+                '<div class="form-group text-center"> <label>Default template</label> <div class="check"><input id="check" type="checkbox" name="template" style="display: none"/><label for="check"><div class="box"><i class="fa fa-check"></i></div> </label></div></div>' +
+                '<div class="form-group text-center"><label>Enabled</label> <div class="check"><input id="check1" name="enabled"  type="checkbox" style="display: none" /><label for="check1"><div class="box"><i class="fa fa-check"></i></div> </label></div></div>' +
+                '</div>');
+
+            selecttorModal.find(".btn-close").html("Close");
+            selecttorModal.find(".btn-valid").html("Create");
+
+            selecttorModal.find(".btn-valid").attr("attr-href", href);
+            selecttorModal.find(".btn-valid").attr("attr-event", "createvalidapp");
+            selecttorModal.find(".btn-close").show();
+            selecttorModal.find(".btn-valid").show();
+
+            modal("show");
+        });
+
     });
 
     /**
@@ -3006,6 +3299,16 @@ $(document).ready(function () {
 
             selecttorModal.find(".modal-body").append("<div class='form-group text-center'><label>Prefix</label><input type='text' name='prefix' class='form-control text-center' value='"+prefix+"' ></div>");
             selecttorModal.find(".modal-body").append("</div></div>");
+            var selectRender = "<div class='form-group text-center'><label>Renderer</label><select class='form-control text-center' name='renderer'>";
+
+            $.each(results["availableRenderers"], function (index, val) {
+
+                selectRender += "<option value='"+index+"' "+((index === results.renderer)? 'selected' : '')+">"+index+"</option>";
+            });
+            selectRender += "</select>";
+
+            selecttorModal.find(".modal-body").append(selectRender);
+            selecttorModal.find(".modal-body").append("</div></div>");
             selecttorModal.find(".modal-body").append('<div class="container-new">' +
                 '<div class="form-group text-center"> <label>Enabled</label> <div class="check"><input id="check" type="checkbox" name="enabled" '+((enabled === "yes")? "checked='checked'" : "")+' style="display: none"/><label for="check"><div class="box"><i class="fa fa-check"></i></div> </label></div></div>' +
                 '<div class="text-center "> <button data-toggle="collapse" data-target="#'+name+'-collapse" class=" btn btn-toolbar">Advanced options</button></div><br>' +
@@ -3094,6 +3397,67 @@ $(document).ready(function () {
         });
     });
 
+
+    /**
+     * Event to show edit twig configuration
+     */
+    $(document).on('click', ".edittwigconfig", function () {
+        var selector = $(this);
+        var href = selector.attr("attr-href");
+        var href2 = selector.attr("attr-href2");
+        var name = selector.attr("attr-config");
+        var result = null;
+
+        $.ajax({
+            url : href,
+            type : 'POST',
+            dataType : 'json',
+            success : function(data){
+                if (data['code'] === 200)
+                {
+                    result = data['results'];
+                    var selecttorModal = $("#modalManager");
+
+                    selecttorModal.find(".modal-header").html("<strong class='text-center'>Edit "+name+" configuration</strong>");
+                    selecttorModal.find(".modal-header").append("<p class='alert alert-danger onealert' style='display: none'></p>");
+                    selecttorModal.find(".modal-body").html("<h4 class='text-center'>Edit fields to update twig configuration.</h4>");
+                    selecttorModal.find(".modal-body").append("<br>");
+                    selecttorModal.find(".modal-body").append("<div class='container'><div class='row'>");
+
+                    selecttorModal.find(".modal-body").append("<div class='form-group text-center'><label>Configuration name</label><input type='text' name='config' class='form-control text-center' value='"+name+"' disabled='disabled'></div>");
+                    selecttorModal.find(".modal-body").append("</div></div>");
+                    selecttorModal.find(".modal-body").append('<div class="container-new">' +
+                        '<div class="form-group text-center"> <label>Debug</label> <div class="check"><input id="check" type="checkbox" name="debug" '+((result['debug'] === true)? "checked='checked'" : "")+' style="display: none"/><label for="check"><div class="box"><i class="fa fa-check"></i></div> </label></div></div>' +
+                        '<div class="form-group text-center"><label>Cache</label> <div class="check"><input id="check1" name="cache" '+((result['cache'] === true)? "checked='checked'" : "")+' type="checkbox" style="display: none" /><label for="check1"><div class="box"><i class="fa fa-check"></i></div> </label></div></div>' +
+                        '<div class="form-group text-center"><label>Strict variables</label> <div class="check"><input id="check2" name="strict_variables" '+((result['strict_variables'] === true)? "checked='checked'" : "")+' type="checkbox" style="display: none" /><label for="check2"><div class="box"><i class="fa fa-check"></i></div> </label></div></div>' +
+                        '<div class="form-group text-center"><label>Optimizations</label> <div class="check"><input id="check3" name="optimizations" '+((result['optimizations'] === true)? "checked='checked'" : "")+' type="checkbox" style="display: none" /><label for="check3"><div class="box"><i class="fa fa-check"></i></div> </label></div></div>' +
+                        '<div class="form-group text-center"><label>Auto reload</label> <div class="check"><input id="check4" name="auto_reload" '+((result['auto_reload'] === true)? "checked='checked'" : "")+' type="checkbox" style="display: none" /><label for="check4"><div class="box"><i class="fa fa-check"></i></div> </label></div></div>' +
+                        '</div>');
+                    selecttorModal.find(".modal-body").append("</div></div>");
+
+                    selecttorModal.find(".btn-close").html("Close");
+                    selecttorModal.find(".btn-valid").html("Update");
+
+                    selecttorModal.find(".btn-valid").attr("attr-href", href2);
+                    selecttorModal.find(".btn-valid").attr("attr-config", name);
+                    selecttorModal.find(".btn-valid").attr("attr-event", "edittwigsave");
+                    selecttorModal.find(".btn-close").show();
+                    selecttorModal.find(".btn-valid").show();
+
+                    modal("show");
+                }
+                else
+                {
+                    operationError();
+                    return (0);
+                }
+            },
+            error : function (data) {
+                operationError(data);
+            }
+        });
+    });
+
     /**
      * Reload data for deployment
      */
@@ -3133,8 +3497,8 @@ $(document).ready(function () {
                             pu = value['r_parameters'];
                             for (var i = 0; i < pa.length; i++)
                             {
-                                if (typeof  pu[i] !== "undefined")
-                                    params += "<li class='list-group-item text-center'> "+ pa[i] +" <i class='pe-7s-right-arrow iumio-picto-routing'></i> <strong>"+ pu[i][1]+"</strong></li>";
+                                if (typeof  pu[pa[i]] !== "undefined")
+                                    params += "<li class='list-group-item text-center'> "+ pa[i] +" <i class='pe-7s-right-arrow iumio-picto-routing'></i> <strong>"+pu[pa[i]]+"</strong></li>";
                                 else
                                     params += "<li class='list-group-item text-center'> "+ pa[i] + " <i class='pe-7s-right-arrow iumio-picto-routing'></i> <strong>untyped</strong></li>";
                             }
@@ -3479,6 +3843,30 @@ $(document).ready(function () {
     });
 
     /**
+     * Event to remove a routing file
+     */
+    $(document).on('click', ".removeComponent", function () {
+        var selector = $(this);
+        var href = selector.attr("attr-href");
+        var package = selector.attr("attr-package");
+
+        var selecttorModal = $("#modalManager");
+
+        selecttorModal.find(".modal-header").html("<strong class='text-center'>Remove a composer package</strong>");
+        selecttorModal.find(".modal-body").html("<h4 class='text-center'>Would you like to remove <strong>"+package+"</strong> component from composer package ?</h4>");
+        selecttorModal.find(".btn-close").html("No");
+        selecttorModal.find(".btn-valid").html("Yes");
+
+        selecttorModal.find(".btn-valid").attr("attr-href", href);
+        selecttorModal.find(".btn-valid").attr("attr-event", "removePackage");
+        selecttorModal.find(".btn-valid").attr("attr-package", package);
+        selecttorModal.find(".btn-close").show();
+        selecttorModal.find(".btn-valid").show();
+
+        modal("show");
+    });
+
+    /**
      * Event to export an application
      */
     $(document).on('click', ".exportapp", function () {
@@ -3655,6 +4043,7 @@ $(document).ready(function () {
     getAllCacheEnv(true);
     getAllCompileEnv(true);
     getAllSmartyConfigs(true);
+    getAllTwigConfigs(true);
     getAllAssets(true);
     getRoutingList(true);
     getServicesList(true);
@@ -3662,6 +4051,7 @@ $(document).ready(function () {
     getRequirementsDeployment(true);
     composer(true);
     getAllLocale(true);
+    getRendererList(true);
 
 
     setInterval(function () {
@@ -3676,6 +4066,7 @@ $(document).ready(function () {
             getHostsList(true);
             getAllCacheEnv(true);
             getAllCompileEnv(true);
+            getAllSmartyConfigs(true);
             getAllSmartyConfigs(true);
             getAllAssets(true);
             getRoutingList(true);

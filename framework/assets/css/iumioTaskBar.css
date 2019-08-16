@@ -9,9 +9,16 @@
  *
  */
 
+
+
+#iumioTaskBar  * {
+    line-height: normal;
+}
+
 .layout-error-text {
     color: white
 }
+
 
 .layout-error-text h4 {
     font-weight: 700;
@@ -21,29 +28,39 @@
     padding-bottom: 20px
 }
 
-.iumioTaskBar {
-    background-color: rgba(53, 53, 53, .72);
+#iumioTaskBar .iumioTaskBarDropdown a:hover, .iumioTaskBar .iumioTaskBarDropdown a:hover,
+#iumioTaskBar .FGM a:hover, .iumioTaskBar .FGM a:hover {
+    background-color: #3c58d9!important;
+    color: white!important;
+}
+
+#iumioTaskBar img, .iumioTaskBar img {
+    vertical-align: middle;
+    border: 0;
+}
+
+#iumioTaskBar, .iumioTaskBar {
+    background-color: rgb(48, 51, 68);
     bottom: 0;
-    box-shadow: 0 -1px 0 rgba(0, 0, 0, .2);
     color: #EEE;
-    font: 11px Arial, sans-serif;
     left: 0;
     margin: 0;
-    padding: 0 36px 0 0;
+    padding: 0 0px 0 0;
     position: fixed;
     right: 0;
     text-align: left;
-    height: 35px;
+    /*height: 35px!important;*/
     text-transform: none;
     z-index: 99999;
     -webkit-font-smoothing: subpixel-antialiased;
-    -moz-osx-font-smoothing: auto
+    -moz-osx-font-smoothing: auto;
+
 }
 
-.iumiocode,
-.iumiomethod,
-.iumioreferer,
-.iumiouidie {
+#iumioTaskBar .iumiocode,
+#iumioTaskBar .iumiomethod,
+#iumioTaskBar .iumioreferer,
+#iumioTaskBar .iumiouide {
     display: inline-block;
     width: 100%;
     text-align: left;
@@ -51,42 +68,41 @@
     margin-bottom: 0
 }
 
-.iumio-taskbar-item {
+#iumioTaskBar .iumio-taskbar-item {
     padding-right: 5px!important
 }
 
-.iumioTaskbarTable {
+#iumioTaskBar .iumioTaskbarTable {
     margin: 0 auto;
     width: 100%;
-    min-width: 250px;
     background-color: #fff!important;
     font-family: "Helvetica Neue", Arial, sans-serif!important
 }
 
-.iumioTaskbarTableApps {
+#iumioTaskBar .iumioTaskbarTableApps {
     font-size: 15px;
     border: none
 }
 
-.iumioTaskbarTableApps tr td,
-.iumioTaskbarTableApps tr th {
+#iumioTaskBar .iumioTaskbarTableApps tr td,
+#iumioTaskBar .iumioTaskbarTableApps tr th {
     padding: 7px 10px!important;
     text-align: center
 }
 
-.iumioTaskBBarAppname {
+#iumioTaskBar .iumioTaskBBarAppname {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: auto
 }
 
-.iumioTaskbarTable thead th {
+#iumioTaskBar .iumioTaskbarTable thead th {
     font-weight: 400;
-    background: #2259a4;
+    background: #3e55da;
     color: #fff
 }
 
-.iumiouidieurl:hover {
+#iumioTaskBar .iumiouideurl:hover {
     text-decoration: underline!important;
     cursor: pointer!important
 }
@@ -107,7 +123,8 @@
 #iumioTaskBarAssets .iumioTaskBarDropdownContent li:first-child td:hover,
 #iumioTaskBarCacheClear .iumioTaskBarDropdownContent li:first-child td:hover,
 #iumioTaskBarEnaDisApp .iumioTaskBarDropdownContent li:first-child td:hover {
-    background-color: #fff
+    background-color: #fff;
+    color : rgb(48, 51, 68);
 }
 
 #iumioTaskBarAssets .iumioTaskBarDropdownContent li:first-child td,
@@ -116,60 +133,50 @@
     text-align: left
 }
 
-.iumioTaskbarTable tr {
-    background: #f4f7f8;
-    border-bottom: 1px solid #FFF;
-    margin-bottom: 5px;
-    color: #000
+#iumioTaskBar .iumioTaskbarTable thead {
+    border: 1px solid #233bab;
 }
 
-.iumioTaskbarTable tr:nth-child(even) {
-    background: #e8eeef
+#iumioTaskBar .iumioTaskbarTable tr {
+    background: rgb(48, 51, 68)!important;
+    color: white;
+    font-size: 14px;
+
 }
 
-.iumioTaskbarTable td,
-.iumioTaskbarTable th {
+#iumioTaskBar .iumioTaskbarTable td,
+#iumioTaskBar .iumioTaskbarTable th {
     text-align: left;
-    font-weight: 300;
-    color: #000;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 15px
+    color: white;
+    padding: 5px 5px 5px 5px;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
 }
 
-.iumioTaskbarTable th {
-    padding: 10px
-}
 
-.iumioTaskbarTable tbody {
+
+#iumioTaskBar .iumioTaskbarTable tbody {
     background-color: #fff!important
 }
 
-.iumioTaskbarTable tbody tr td:nth-child(1) {
-    min-width: 120px
+#iumioTaskBar .iumioTaskbarTable tbody tr td:nth-child(1) {
+   width: 86px;
 }
 
-.iumioTaskbarTable tbody tr td:nth-child(2) {
-    min-width: 60px
-}
-
-.iumioTaskbarTable tbody tr td:nth-child(3) {
+#iumioTaskBar .iumioTaskbarTable tbody tr td:nth-child(3) {
     min-width: 50px
 }
 
-.iumioTaskbarTable tbody tr td:nth-child(4) {
+#iumioTaskBar .iumioTaskbarTable tbody tr td:nth-child(4) {
     min-width: 150px
 }
 
-.iumioTaskBarDropdownContent .iumioTaskBarGetOneLog:hover (.iumiocode:after, .iumioreferer:after, .iumiomethod:after, .iumiouidie:after) {
-    border-left: 1px solid #000
-}
-
-.iumioTaskBarOneLog:hover {
+#iumioTaskBar .iumioTaskBarOneLog:hover {
     cursor: auto
 }
 
-.iumioTaskBarOneLog a {
+#iumioTaskBar .iumioTaskBarOneLog a {
     display: inline-block!important;
     padding: 10px 5px 10px 0!important;
     font-size: 10px!important;
@@ -177,25 +184,24 @@
     color: #fff!important
 }
 
-.iumioTaskBarOneLog,
-.iumioTaskbarCodeError {
-    font-size: 12px!important
+#iumioTaskBar .iumioTaskBarOneLog,
+#iumioTaskBar .iumioTaskbarCodeError {
+    font-size: 14px!important
 }
 
-.iumioTaskBarAppName {
+#iumioTaskBar .iumioTaskBarAppName {
     border-right: 1px solid #fff
 }
 
-.iumioTaskBarGetOneLog {
-    width: 450px!important;
+#iumioTaskBar .iumioTaskBarGetOneLog {
     overflow: auto!important
 }
 
-.iumioTaskBarDropdownContent .iumioTaskBarGetOneLog:hover {
+#iumioTaskBar .iumioTaskBarDropdownContent .iumioTaskBarGetOneLog:hover {
     background-color: rgba(0, 0, 255, .5)!important
 }
 
-.newiumiorequest {
+#iumioTaskBar .newiumiorequest {
     animation: irubberBand 2s infinite;
     -webkit-animation: irubberBand 2s infinite;
     -moz-animation: irubberBand 2s infinite;
@@ -224,60 +230,102 @@
     }
 }
 
-.iumioTaskBarOneLog {
+#iumioTaskBar .iumioTaskBarOneLog {
     padding: 0!important
 }
 
-.iumioTaskBar li {
+#iumioTaskBar li, .iumioTaskBar li {
     float: left;
     padding-left: 0!important;
     list-style: none
 }
 
-.iumioTaskBar li a {
+#iumioTaskBar li a, .iumioTaskBar li a {
     display: block;
     color: #fff;
     text-align: center;
-    padding: 12px 25px;
-    font-size: 10px;
+    padding: 5px 10px 5px 10px;
+    font-size: 14px;
     text-decoration: none;
-    font-weight: 700;
+    font-family: arial !important;
 }
 
-.iumioTaskBar li a:hover:not(.active) {
+#iumioTaskBar li a:hover:not(.active), .iumioTaskBar li a:hover:not(.active) {
     background-color: #fff;
     color: #fff
 }
 
-.iumioTaskBar li a:hover {
+#iumioTaskBar li a:hover, .iumioTaskBar li a:hover {
     color: #000!important
 }
 
-.iumioTaskBar .active {
+#iumioTaskBar .active, .iumioTaskBar .active {
     color: #fff
 }
 
-.iumioTaskBar .active strong {
+#iumioTaskBar .active strong, .iumioTaskBar .active strong  {
     color: #fff!important
 }
 
-.iumioTaskBar .flogo {
-    padding-left: 0!important;
-    width: 25px
+#iumioTaskBar .flogo, .iumioTaskBar .flogo {
+    padding-left: 4px!important;
+    padding-right: 4px;
+    height: 100%;
+    padding-top: 1px;
 }
 
-.iumioTaskBar .flogo img {
-    width: 25px!important;
-    padding-top: 4px;
-    padding-left: 10px
+#iumioTaskBar .iumioTaskBarTimeLoad a img,
+#iumioTaskBar .iumioTaskBarMemory a img {
+    height: 13px;
 }
 
-#iumioTaskBarReduce,
-#iumioTaskBarRestore {
+#iumioTaskBar small, .iumioTaskBar small {
+    font-size: 85%;
+}
+
+#iumioTaskBar .flogo img, .iumioTaskBar .flogo img {
+    height: 25px!important;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+
+}
+#iumioTaskBar li:nth-child(2), .iumioTaskBar li:nth-child(2) {
+    width: 120px;
+    background-color: #3c58d9;
+}
+
+#iumioTaskBar .iumioTaskBarVersion, .iumioTaskBar .iumioTaskBarVersion {
+    float: right
+}
+
+
+#iumioTaskBar .iumioTaskBarVersion a, #iumioTaskBar .iumioTaskBarTimeLoad a,  #iumioTaskBar .iumioTaskBarMemory a,
+.iumioTaskBar .iumioTaskBarVersion a, #iumioTaskBar .iumioTaskBarTimeLoad a,  .iumioTaskBar .iumioTaskBarMemory a{
+    /*background-color: #3f54da;*/
+    padding-right: 20px;
+    padding-left: 20px;
+    font-weight: 700;
+}
+
+#iumioTaskBar .iumioTaskBarVersion a:hover, #iumioTaskBar .iumioTaskBarTimeLoad a:hover,
+.iumioTaskBar .iumioTaskBarVersion a:hover, .iumioTaskBar .iumioTaskBarTimeLoad a:hover {
+    color: white!important;
+}
+
+#iumioTaskBar li:nth-child(2) a,
+.iumioTaskBar li:nth-child(2) a{
+    text-align: center;
+
+}
+
+#iumioTaskBarClicker{
     cursor: pointer
 }
 
-.iumioTaskBarDropdown {
+
+
+#iumioTaskBar .iumioTaskBarDropdown {
     position: relative;
     list-style-type: none;
     padding: 0;
@@ -286,7 +334,7 @@
     display: inline-block
 }
 
-.iumioTaskBarDropdownContent {
+#iumioTaskBar .iumioTaskBarDropdownContent {
     visibility: hidden;
     opacity: 0;
     position: absolute;
@@ -297,7 +345,7 @@
     transition: all .3s ease-in-out 0s, visibility 0s linear .3s, z-index 0s linear 10ms
 }
 
-.iumioTaskBarDropdown:hover .iumioTaskBarDropdownContent {
+#iumioTaskBar .iumioTaskBarDropdown:hover .iumioTaskBarDropdownContent {
     visibility: visible;
     opacity: 1;
     z-index: 1;
@@ -305,77 +353,81 @@
     transition-delay: 0s, 0s, .3s
 }
 
-.iumioTaskBarDropdown:first-child {
-    border-left: none
+#iumioTaskBar .iumioTaskbarTable {
+    border-collapse: initial!important;
 }
 
-.iumioTaskBarDropdownContent {
+#iumioTaskBar .iumioTaskBarDropdownContent {
     background-color: rgba(53, 53, 53, .72);
     padding: 0!important;
     width: auto;
-    border: 1px solid #fff
 }
 
-.iumioTaskBarDropdownContent li {
+#iumioTaskBar .iumioTaskBarDropdownContent li {
     list-style: none;
     display: block!important;
     width: 100%;
     padding: 10px;
     cursor: pointer;
     font-size: 16px;
-    border-bottom: 1px solid #fff
 }
 
-.iumioTaskBarDropdownContent li:before {
+#iumioTaskBar .iumioTaskBarDropdownContent li:before {
     content: ''
 }
 
-.iumioTaskBarDropdownContent li:hover {
+#iumioTaskBar .iumioTaskBarDropdownContent li:hover {
     color: #000;
     background-color: #fff
 }
 
-.iumioTaskBarOneApp {
+#iumioTaskBar .iumioTaskBarOneApp {
     font-weight: 400
 }
 
-.iumioTaskBarOneApp:hover {
+#iumioTaskBar .iumioTaskBarOneApp:hover {
     color: #000!important;
     cursor: pointer
 }
 
 #iumioTaskBarBlank {
     clear: both;
-    height: 36px;
+    height: 26px;
     display: block
 }
 
-.iumioTaskBarLogsTitle {
+#iumioTaskBar .iumioTaskBarLogsTitle {
     font-size: 15px
 }
 
-.iumioTaskBarPulse {
-    animation: pulse 2s infinite
+
+#iumioTaskBar .iumio-red-color {
+    color: #ff431c
 }
 
-.iumioTaskBarPulse:hover {
-    animation: none
+#iumioTaskBar .iumio-green-color {
+    color: #24c724
 }
 
-.iumio-red-color {
-    color: red
+#iumioTaskBar .iumioBtn {
+    border: 1px solid white;
+    color: black;
+    padding: 3px;
+    background-color: white;
 }
 
-.iumio-green-color {
-    color: green
+#iumioTaskBar .iumioBtn:hover {
+    border: 1px solid #3c58d9;
+    color: white!important;
+    background-color: #3c58d9;
 }
 
-.iumio-green-red-btn {
+#iumioTaskBar .iumio-green-red-btn {
     position: relative;
     top: 1px
 }
 
-.iumioTaskBarBounceIn {
+#iumioTaskBar .iumioTaskBarBounceIn {
     -webkit-animation: bounceIn 1s ease-in
 }
 
@@ -454,28 +506,34 @@
     top: -4px
 }
 
+#iumioTaskBar .iumioTaskBarDropdownContent li {
+    padding: 0;
+}
+
 @media (max-width:989px) {
-    .iumioTaskBar li:nth-child(3) {
+    #iumioTaskBar li:nth-child(3),
+    .iumioTaskBar li:nth-child(3){
         display: none
     }
 }
 
 @media (max-width:874px) {
+    #iumioTaskBar li:nth-child(5),
+    #iumioTaskBar li:nth-child(6),
+    #iumioTaskBar li:nth-child(8),
     .iumioTaskBar li:nth-child(5),
     .iumioTaskBar li:nth-child(6),
-    .iumioTaskBar li:nth-child(8) {
+    .iumioTaskBar li:nth-child(8){
         display: none
     }
 }
 
-@media (max-width:514px) {
-    .iumioTaskBar li a {
-        font-size: 10px!important
-    }
-}
-
-@media (max-width:474px) {
-    .iumioTaskBar li:nth-child(2) {
+@media (max-width:537px) {
+    #iumioTaskBar li:nth-child(10),
+    #iumioTaskBar li:nth-child(11),
+    .iumioTaskBar li:nth-child(10),
+    .iumioTaskBar li:nth-child(11)
+     {
         display: none
     }
 }
@@ -484,7 +542,12 @@
     #iumioTaskBarRequests {
         border: none!important
     }
-    .iumioTaskBar li:nth-child(9) {
+    #iumioTaskBar li:nth-child(4),
+    #iumioTaskBar li:nth-child(9),
+    .iumioTaskBar li:nth-child(4),
+    .iumioTaskBar li:nth-child(9){
         display: none!important
     }
 }
+
+
